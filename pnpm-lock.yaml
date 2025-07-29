@@ -47,9 +47,9 @@ importers:
 
   packages/neck-pose-estimator-example/neck-pose-estimator-example-react:
     dependencies:
-      neck-pose-estimator:
-        specifier: workspace:*
-        version: link:../../neck-pose-estimator
+      '@nkmr-lab/neck-pose-estimator':
+        specifier: ^0.1.0
+        version: 0.1.0(typescript@5.8.3)
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -567,6 +567,9 @@ packages:
 
   '@jridgewell/sourcemap-codec@1.5.4':
     resolution: {integrity: sha512-VT2+G1VQs/9oz078bLrYbecdZKs912zQlkelYpuf+SXF+QvZDYJlbx/LSx+meSAwdDFnF8FVXW92AVjjkVmgFw==}
+
+  '@nkmr-lab/neck-pose-estimator@0.1.0':
+    resolution: {integrity: sha512-gn7CqJnD+pw8lrdnLiDVvHyFY8r2UNpIbXq3TU7E++Jkdviq2qLx9YOwHvxetgvgzt+d+qsE0Fx3MNZ6ptNCLw==, tarball: https://npm.pkg.github.com/download/@nkmr-lab/neck-pose-estimator/0.1.0/6dc2f5401bbccba0ccdab43fd0a5fd8773a7d3c7}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2305,6 +2308,15 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@jridgewell/sourcemap-codec@1.5.4': {}
+
+  '@nkmr-lab/neck-pose-estimator@0.1.0(typescript@5.8.3)':
+    dependencies:
+      firebase: 12.0.0
+      openapi-typescript: 7.8.0(typescript@5.8.3)
+      openapi-typescript-fetch: 2.2.1
+    transitivePeerDependencies:
+      - '@react-native-async-storage/async-storage'
+      - typescript
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

@@ -4,7 +4,7 @@ import {
   ApiError,
   NeckAngleEstimator,
   type EstimateResult,
-} from "neck-pose-estimator";
+} from "@nkmr-lab/neck-pose-estimator";
 
 function App() {
   const estimator = useRef<NeckAngleEstimator | null>(null);
