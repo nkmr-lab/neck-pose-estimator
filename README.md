@@ -63,3 +63,12 @@ pnpm -F neck-pose-estimator-example-react dev
 ```bash
 pnpm -F neck-pose-estimator test
 ```
+
+### バックエンドの API スキーマの更新
+
+バックエンドの API スキーマが更新された場合、`packages/neck-pose-estimator/src/types/api-schema.ts`を更新する必要があります。
+以下のコマンドを実行して、最新のスキーマを取得できます。（`.env`ファイルにバックエンドの OpenAPI スキーマを配信している URL を設定する必要があります）
+
+```bash
+pnpm -F neck-pose-estimator openapi
+```
