@@ -1,0 +1,54 @@
+import { components } from "../../types/api-schema";
+
+const posture: components["schemas"]["Posture"] = {
+  appId: "testAppId",
+  id: 1,
+  userId: 1,
+  neckAngle: 30,
+  facePitch: 10,
+  faceYaw: 5,
+  faceRoll: 2,
+  sensorAlpha: 50,
+  sensorBeta: 100,
+  sensorGamma: 20,
+  neckToNose: 100,
+  neckX: 130,
+  neckY: 80,
+  noseX: 120,
+  noseY: 75,
+  imageWidth: 640,
+  imageHeight: 480,
+  standardDistance: 30,
+  fileName: "2025-07-26_12:00:00.000.jpg",
+  createdAt: new Date("2025/07/26").toISOString(),
+  updatedAt: new Date("2025/07/26").toISOString(),
+};
+
+const onlyFeature: components["schemas"]["Posture"] = {
+  appId: "testAppId",
+  id: 2,
+  userId: 1,
+  neckAngle: null,
+  facePitch: 10,
+  faceYaw: 5,
+  faceRoll: 2,
+  sensorAlpha: 50,
+  sensorBeta: 100,
+  sensorGamma: 20,
+  neckToNose: 100,
+  neckX: 130,
+  neckY: 80,
+  noseX: 120,
+  noseY: 75,
+  imageWidth: 640,
+  imageHeight: 480,
+  standardDistance: 30,
+  fileName: "2025-07-26_12:00:00.000.jpg",
+  createdAt: new Date("2025/07/26").toISOString(),
+  updatedAt: new Date("2025/07/26").toISOString(),
+};
+
+export const postureFixture = {
+  posture,
+  onlyFeature,
+} as const;

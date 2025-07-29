@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationDir": "dist",
+    "emitDeclarationOnly": false,
+    "sourceMap": true,
+    "removeComments": true,
+
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2019",
+    "lib": ["DOM", "ES2019"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* 型チェック */
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["vitest/globals"],
+
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

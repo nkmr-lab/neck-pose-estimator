@@ -1,0 +1,47 @@
+{
+  "name": "neck-pose-estimator",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "pnpx dotenv-cli tsc",
+    "dev": "tsc --watch",
+    "openapi": "pnpx dotenv-cli tsx ./scripts/generate-api-schema.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "test": "vitest"
+  },
+  "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad",
+  "dependencies": {
+    "firebase": "^12.0.0",
+    "openapi-typescript": "^7.8.0",
+    "openapi-typescript-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
