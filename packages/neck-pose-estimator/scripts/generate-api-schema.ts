@@ -11,9 +11,7 @@ async function generateTypes() {
   if (!process.env.API_URL) {
     throw new Error("API_URL environment variable is not set.");
   }
-  const url = `${process.env.API_URL}/${
-    process.env.OPENAPI_PATH ?? "openapi.json"
-  }`;
+  const url = `${process.env.API_URL}/${process.env.OPENAPI_PATH ?? "openapi.json"}`;
   const ast = await openapiTS(
     // OpenAPI スキーマファイルのパスを指定
     new URL(url),

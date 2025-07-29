@@ -20,14 +20,14 @@ export class FaceCapture {
     private height: number | null = 240,
     private options?: {
       hideVideo?: boolean;
-    }
+    },
   ) {
     if (!document || !window) {
       throw new Error("FaceCapture requires a browser environment.");
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       throw new Error(
-        "getUserMedia is not supported in this browser. Please use a modern browser."
+        "getUserMedia is not supported in this browser. Please use a modern browser.",
       );
     }
     if (typeof _container === "string") {
@@ -128,7 +128,7 @@ export class FaceCapture {
           resolve(new File([blob], `${fileName}.jpg`));
         },
         "image/jpeg",
-        0.8
+        0.8,
       );
     });
   }
