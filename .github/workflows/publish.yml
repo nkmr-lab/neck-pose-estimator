@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "packages/neck-pose-estimator/**"
+      - ".github/workflows/publish.yml"
+      - "pnpm-lock.yaml"
+      - ".prettierrc"
 
 jobs:
   publish:
