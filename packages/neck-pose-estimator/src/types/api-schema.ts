@@ -186,6 +186,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/user/login/google": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Login Google */
+    get: operations["login_google_user_login_google_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/user/login/google/callback": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Google Callback */
+    get: operations["google_callback_user_login_google_callback_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/user/logout": {
     parameters: {
       query?: never;
@@ -1078,10 +1112,7 @@ export interface operations {
   };
   login_by_basic_user_login_basic_get: {
     parameters: {
-      query: {
-        name: string;
-        password: string;
-      };
+      query?: never;
       header?: never;
       path?: never;
       cookie?: never;
@@ -1107,15 +1138,6 @@ export interface operations {
            *       "detail": "Unauthorized"
            *     } */
           "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };
@@ -1301,6 +1323,93 @@ export interface operations {
         content: {
           /** @example {
            *       "detail": "Bad Request"
+           *     } */
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  login_google_user_login_google_get: {
+    parameters: {
+      query?: {
+        redirect_to?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      302: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  google_callback_user_login_google_callback_get: {
+    parameters: {
+      query: {
+        code: string;
+        state: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      302: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description "Bad Request" */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /** @example {
+           *       "detail": "Bad Request"
+           *     } */
+          "application/json": unknown;
+        };
+      };
+      /** @description "Unauthorized" */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /** @example {
+           *       "detail": "Unauthorized"
            *     } */
           "application/json": unknown;
         };
