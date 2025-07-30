@@ -1,8 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { performLogin, logout } from "../../utils/basicLogin";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  performLogin,
+  logout,
+  performCreateUser,
+  performGoogleLogin,
+} from "../../utils/login";
 import * as apiClient from "../../utils/api-client";
 import { userFixture } from "../fixture/user";
-import { performCreateUser } from "../../utils/basicLogin";
 import { ApiError } from "openapi-typescript-fetch";
 
 // Mock the api-client
@@ -54,6 +58,9 @@ describe("auth functions", () => {
     it("should return an error if api client throws an error", async () => {
       const error = new Error("API Error");
       mockUseApiClient.mockRejectedValue(error);
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       const result = await performLogin(baseUrl, appId, {
         name: "user",
@@ -62,6 +69,7 @@ describe("auth functions", () => {
 
       expect(result).toBeInstanceOf(Error);
       expect((result as Error).message).toBe("API Error");
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Login failed: API Error");
     });
 
     it("should return an ApiError if api client returns an ApiError", async () => {
@@ -73,6 +81,9 @@ describe("auth functions", () => {
         headers: new Headers(),
       });
       mockUseApiClient.mockResolvedValue(apiError);
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       const result = await performLogin(baseUrl, appId, {
         name: "user",
@@ -81,6 +92,10 @@ describe("auth functions", () => {
 
       expect(result).toBeInstanceOf(ApiError);
       expect((result as ApiError).status).toBe(401);
+      expect((result as ApiError).data?.detail).toBe("Invalid credentials");
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        `Login failed: 401 Invalid credentials`,
+      );
     });
   });
 
@@ -121,11 +136,60 @@ describe("auth functions", () => {
     it("should return an error if api client throws an error", async () => {
       const error = new Error("API Error");
       mockUseApiClient.mockRejectedValue(error);
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       const result = await performCreateUser(baseUrl, appId, createUserProps);
 
       expect(result).toBeInstanceOf(Error);
       expect((result as Error).message).toBe("API Error");
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Create user failed: API Error",
+      );
+    });
+  });
+
+  describe("performGoogleLogin", () => {
+    const originalLocation = window.location;
+
+    beforeEach(() => {
+      // Mock window.location.href
+      Object.defineProperty(window, "location", {
+        value: {
+          ...originalLocation,
+          href: "",
+          origin: "http://localhost:3000",
+        },
+        writable: true,
+      });
+    });
+
+    afterEach(() => {
+      // Restore original window.location
+      Object.defineProperty(window, "location", {
+        value: originalLocation,
+        writable: true,
+      });
+    });
+
+    it("should redirect to the correct Google login URL", () => {
+      performGoogleLogin(baseUrl, "/home");
+      const expectedUrl = new URL(`${baseUrl}/user/login/google`);
+      expectedUrl.searchParams.set("redirect_to", "http://localhost:3000/home");
+      expect(window.location.href).toBe(expectedUrl.toString());
+    });
+
+    it("should use window.location.origin if baseUrl is a relative path", () => {
+      performGoogleLogin("/api", "/dashboard");
+      const expectedUrl = new URL(
+        "http://localhost:3000/api/user/login/google",
+      );
+      expectedUrl.searchParams.set(
+        "redirect_to",
+        "http://localhost:3000/dashboard",
+      );
+      expect(window.location.href).toBe(expectedUrl.toString());
     });
   });
 

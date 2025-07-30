@@ -3,7 +3,7 @@ import { NeckAngleEstimator } from "../NeckAngleEstimator"; // Assuming the clas
 import { FaceCapture } from "../FaceCapture";
 import { DeviceOrientationSensor } from "../DeviceOrientationSensor";
 import * as apiClient from "../utils/api-client";
-import * as auth from "../utils/basicLogin";
+import * as auth from "../utils/login";
 import { userFixture } from "./fixture/user";
 import { postureFixture } from "./fixture/posture";
 
