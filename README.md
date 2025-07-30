@@ -51,7 +51,7 @@ pnpm -r build
 React サンプルアプリケーションを開発モードで実行するには、次のコマンドを使用します。
 
 ```bash
-pnpm -F neck-pose-estimator-example-react dev
+pnpm -F @nkmr-lab/neck-pose-estimator-example-react dev
 ```
 
 これにより Vite 開発サーバーが起動します。アプリケーションがカメラとデバイスセンサーにアクセスするには、HTTPS コンテキストが必要であることに注意してください。また、環境変数や自己証明書など詳細なセットアップは、`neck-pose-estimator-example`の [README](packages/neck-pose-estimator-example/README.md) を参照してください。
@@ -61,7 +61,7 @@ pnpm -F neck-pose-estimator-example-react dev
 コアライブラリのテストスイートを実行するには、次のコマンドを使用します。
 
 ```bash
-pnpm -F neck-pose-estimator test
+pnpm -F @nkmr-lab/neck-pose-estimator test
 ```
 
 ### バックエンドの API スキーマの更新
@@ -70,5 +70,5 @@ pnpm -F neck-pose-estimator test
 以下のコマンドを実行して、最新のスキーマを取得できます。（`.env`ファイルにバックエンドの OpenAPI スキーマを配信している URL を設定する必要があります）
 
 ```bash
-pnpm -F neck-pose-estimator openapi
+pnpm -F @nkmr-lab/neck-pose-estimator openapi
 ```
