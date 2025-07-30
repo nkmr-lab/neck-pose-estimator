@@ -17,7 +17,7 @@ export const useApiClient = async <
   appId: string,
   [path, method]: [Path, Method],
   argsResolver: () => OpArgType<paths[Path][Method]> | null,
-  options?: HeadersInit
+  options?: HeadersInit,
 ) => {
   const args = argsResolver?.();
   const isFormData = args instanceof FormData;
