@@ -48,12 +48,12 @@ export const useApiClient = async <
       })
         .then(
           (res) =>
-            res.json() as Promise<OpReturnType<paths[Path][Method]> | ApiError>
+            res.json() as Promise<OpReturnType<paths[Path][Method]> | ApiError>,
         )
         .catch((err) => {
           if (err instanceof ApiError) {
             console.error(
-              `API request failed: ${err.status} ${err.data?.detail}`
+              `API request failed: ${err.status} ${err.data?.detail}`,
             );
             return err as ApiError;
           }

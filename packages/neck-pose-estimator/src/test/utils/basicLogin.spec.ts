@@ -34,9 +34,9 @@ describe("auth functions", () => {
         expect.any(Function),
         {
           Authorization: `Basic ${btoa(
-            `${loginProps.name}:${loginProps.password}`
+            `${loginProps.name}:${loginProps.password}`,
           )}`,
-        }
+        },
       );
 
       expect(result).toEqual(userFixture.notCalibrated);
@@ -100,7 +100,7 @@ describe("auth functions", () => {
         baseUrl,
         appId,
         ["/user/create/basic", "post"],
-        expect.any(Function)
+        expect.any(Function),
       );
       const propsFactory = mockUseApiClient.mock.calls[0][3];
       expect(propsFactory()).toEqual(createUserProps);
@@ -139,7 +139,7 @@ describe("auth functions", () => {
         baseUrl,
         appId,
         ["/user/logout", "get"],
-        expect.any(Function)
+        expect.any(Function),
       );
     });
 
@@ -153,7 +153,7 @@ describe("auth functions", () => {
       await logout(baseUrl, appId);
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        `Logout failed: ${error.message}`
+        `Logout failed: ${error.message}`,
       );
       consoleErrorSpy.mockRestore();
     });
