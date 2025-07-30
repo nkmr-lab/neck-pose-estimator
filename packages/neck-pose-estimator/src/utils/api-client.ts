@@ -17,6 +17,7 @@ export const useApiClient = async <
   appId: string,
   [path, method]: [Path, Method],
   argsResolver: () => OpArgType<paths[Path][Method]> | null,
+  options?: HeadersInit
 ) => {
   const args = argsResolver?.();
   const isFormData = args instanceof FormData;
@@ -26,6 +27,7 @@ export const useApiClient = async <
       headers: {
         "App-Id": appId,
         "Access-Control-Allow-Credentials": "true",
+        ...(options ?? {}),
       },
       credentials: "include",
       mode: "cors",
@@ -40,14 +42,21 @@ export const useApiClient = async <
         headers: {
           "App-Id": appId,
           "Access-Control-Allow-Credentials": "true",
+          ...(options ?? {}),
         },
         credentials: "include",
       })
         .then(
           (res) =>
-            res.json() as Promise<OpReturnType<paths[Path][Method]> | ApiError>,
+            res.json() as Promise<OpReturnType<paths[Path][Method]> | ApiError>
         )
         .catch((err) => {
+          if (err instanceof ApiError) {
+            console.error(
+              `API request failed: ${err.status} ${err.data?.detail}`
+            );
+            return err as ApiError;
+          }
           console.error("API request failed", err);
           return err as Error;
         })
