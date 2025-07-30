@@ -36,18 +36,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create dummy firebase.config.ts for CI
-        run: |
-          echo "export default {
-            apiKey: 'DUMMY_API_KEY',
-            authDomain: 'DUMMY_AUTH_DOMAIN',
-            projectId: 'DUMMY_PROJECT_ID',
-            storageBucket: 'DUMMY_STORAGE_BUCKET',
-            messagingSenderId: 'DUMMY_MESSAGING_SENDER_ID',
-            appId: 'DUMMY_APP_ID',
-            measurementId: 'DUMMY_MEASUREMENT_ID'
-          };" > packages/neck-pose-estimator/src/firebase.config.ts
-
       - name: Check for API Schema Changes
         run: |
           pnpm -F "@nkmr-lab/neck-pose-estimator" openapi
