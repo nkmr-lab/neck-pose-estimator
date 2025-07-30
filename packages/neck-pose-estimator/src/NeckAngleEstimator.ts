@@ -123,7 +123,7 @@ export class NeckAngleEstimator {
   }
 
   hadCalibrated(): boolean {
-    return this.user !== null && this.user.standardPostureId !== null;
+    return this.user === null || this.user.standardPostureId !== null;
   }
 
   private async handleEstimate(capture: CaptureResult) {
@@ -139,7 +139,7 @@ export class NeckAngleEstimator {
       const sensor = this.sensor.get();
       const formData = new FormData();
       formData.append("file", capture.file);
-      formData.append("sensor", JSON.stringify(sensor));
+      formData.append("sensors", JSON.stringify(sensor));
 
       const res =
         this.user === null
