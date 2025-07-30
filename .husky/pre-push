@@ -1,2 +1,3 @@
 pnpm -F "@nkmr-lab/neck-pose-estimator" lint
 pnpm -F "@nkmr-lab/neck-pose-estimator" test
+pnpm -F "@nkmr-lab/neck-pose-estimator" format
