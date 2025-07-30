@@ -1,47 +1,98 @@
-import { OpArgType, OpReturnType } from "openapi-typescript-fetch";
+import { ApiError, OpArgType, OpReturnType } from "openapi-typescript-fetch";
 import { paths } from "../types";
 import { useApiClient } from "./api-client";
 
-const path = "/user/auth/basic";
-type Path = typeof path;
-const method = "post";
-type Method = typeof method;
+// --- Paths and Types ---
+const loginPath = "/user/login/basic";
+type LoginPath = typeof loginPath;
+const loginMethod = "get";
+type LoginMethod = typeof loginMethod;
+type LoginProps = { name: string; password: string };
+type LoginResponse = OpReturnType<paths[LoginPath][LoginMethod]>;
 
-// Login logic part
-async function performLogin(
-  baseUrl: string,
-  appId: string,
-  props: OpArgType<paths[Path][Method]>,
-) {
-  if (!props.name || !props.password) {
-    console.error("Name and password are required");
-    return null;
-  }
+const createPath = "/user/create/basic";
+type CreatePath = typeof createPath;
+const createMethod = "post";
+type CreateMethod = typeof createMethod;
+type CreateUserProps = OpArgType<paths[CreatePath][CreateMethod]>;
+type CreateUserResponse = OpReturnType<paths[CreatePath][CreateMethod]>;
+
+// --- API Logic ---
+
+async function handleApiCall<T>(
+  apiCall: () => Promise<T>,
+  context: "Login" | "Create user",
+): Promise<T | ApiError | Error> {
   try {
-    const res = await useApiClient(baseUrl, appId, [path, method], () => props);
-
-    if (res instanceof Error) {
-      console.error(`Login failed: ${res.message}`);
-      return null;
+    const res = await apiCall();
+    if (res instanceof ApiError) {
+      console.error(`${context} failed: ${res.status} ${res.data?.detail}`);
+      return res;
+    } else if (res instanceof Error) {
+      console.error(`${context} failed: ${res.message}`);
+      return res;
     } else if (res === null) {
-      console.error("Login failed: API returned null");
-      return null;
+      const message = `${context} failed: API returned null`;
+      console.error(message);
+      return new Error(message);
     }
     return res;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(`Login failed: ${error.message}`);
+    if (error instanceof ApiError) {
+      console.error(`${context} failed: ${error.status} ${error.data?.detail}`);
+      return error;
+    } else if (error instanceof Error) {
+      console.error(`${context} failed: ${error.message}`);
+      return error;
     } else {
-      console.error("Login failed with unknown error", error);
+      const message = `${context} failed with unknown error`;
+      console.error(message, error);
+      return new Error(message);
     }
-    return null;
   }
+}
+
+async function performLogin(
+  baseUrl: string,
+  appId: string,
+  props: LoginProps,
+): Promise<LoginResponse | ApiError | Error> {
+  if (!props.name || !props.password) {
+    return new Error("Name and password are required");
+  }
+  return handleApiCall(
+    () =>
+      useApiClient(baseUrl, appId, [loginPath, loginMethod], () => {}, {
+        Authorization: `Basic ${btoa(`${props.name}:${props.password}`)}`,
+      }),
+    "Login",
+  ) as Promise<LoginResponse | ApiError | Error>;
+}
+
+async function performCreateUser(
+  baseUrl: string,
+  appId: string,
+  props: CreateUserProps,
+): Promise<CreateUserResponse | ApiError | Error> {
+  if (!props.name || !props.password) {
+    return new Error("Name and password are required");
+  }
+  return handleApiCall(
+    () => useApiClient(baseUrl, appId, [createPath, createMethod], () => props),
+    "Create user",
+  ) as Promise<CreateUserResponse | ApiError | Error>;
 }
 
 // UI part
 function createLoginDialog(
-  onSubmit: (props: OpArgType<paths[Path][Method]>) => void,
-): () => void {
+  handleLogin: (props: LoginProps) => void,
+  handleCreateUser: (props: OpArgType<paths[CreatePath][CreateMethod]>) => void,
+  onSkip: () => void,
+): {
+  close: () => void;
+  showError: (message: string) => void;
+  clearError: () => void;
+} {
   // Create dialog element
   const dialog = document.createElement("dialog");
   dialog.style.border = "1px solid #ccc";
@@ -58,11 +109,6 @@ function createLoginDialog(
   form.style.gap = "15px";
   form.onsubmit = (event: Event) => {
     event.preventDefault();
-    onSubmit({
-      name: nameInput.value,
-      password: passwordInput.value,
-      isAdmin: false,
-    });
     return false;
   };
 
@@ -72,6 +118,14 @@ function createLoginDialog(
   title.style.margin = "0 0 10px 0";
   title.style.textAlign = "center";
   form.appendChild(title);
+
+  // Create error message paragraph
+  const errorParagraph = document.createElement("p");
+  errorParagraph.style.color = "red";
+  errorParagraph.style.textAlign = "center";
+  errorParagraph.style.margin = "0";
+  errorParagraph.style.minHeight = "1.2em";
+  form.appendChild(errorParagraph);
 
   // Create name input
   const nameInput = document.createElement("input");
@@ -94,16 +148,63 @@ function createLoginDialog(
   form.appendChild(passwordInput);
 
   // Create submit button
-  const submitButton = document.createElement("button");
-  submitButton.type = "submit";
-  submitButton.textContent = "Submit";
-  submitButton.style.padding = "10px";
-  submitButton.style.border = "none";
-  submitButton.style.borderRadius = "4px";
-  submitButton.style.backgroundColor = "#007bff";
-  submitButton.style.color = "white";
-  submitButton.style.cursor = "pointer";
-  form.appendChild(submitButton);
+  const loginButton = document.createElement("button");
+  loginButton.type = "submit";
+  loginButton.textContent = "Login";
+  loginButton.style.padding = "10px";
+  loginButton.style.border = "none";
+  loginButton.style.borderRadius = "4px";
+  loginButton.style.backgroundColor = "#007bff";
+  loginButton.style.color = "white";
+  loginButton.style.cursor = "pointer";
+  loginButton.onclick = async (event: MouseEvent) => {
+    event.preventDefault();
+    const props: LoginProps = {
+      name: nameInput.value,
+      password: passwordInput.value,
+    };
+    handleLogin(props);
+  };
+  form.appendChild(loginButton);
+
+  const createButton = document.createElement("button");
+  createButton.type = "submit";
+  createButton.textContent = "Create Account";
+  createButton.style.padding = "10px";
+  createButton.style.border = "none";
+  createButton.style.borderRadius = "4px";
+  createButton.style.backgroundColor = "#28a745";
+  createButton.style.color = "white";
+  createButton.style.cursor = "pointer";
+  createButton.onclick = async (event: MouseEvent) => {
+    event.preventDefault();
+    const props: OpArgType<paths[CreatePath][CreateMethod]> = {
+      name: nameInput.value,
+      password: passwordInput.value,
+      isAdmin: false, // Default to false, can be changed if needed
+    };
+    handleCreateUser(props);
+  };
+  form.appendChild(createButton);
+
+  const divider = document.createElement("hr");
+  divider.style.border = "none";
+  divider.style.borderTop = "1px solid #ccc";
+  divider.style.margin = "10px 0";
+  form.appendChild(divider);
+
+  // Create skip button
+  const skipButton = document.createElement("button");
+  skipButton.type = "button";
+  skipButton.textContent = "Continue without login";
+  skipButton.style.padding = "10px";
+  skipButton.style.border = "1px solid #ccc";
+  skipButton.style.borderRadius = "4px";
+  skipButton.style.backgroundColor = "transparent";
+  skipButton.style.color = "#ccc";
+  skipButton.style.cursor = "pointer";
+  skipButton.onclick = onSkip;
+  form.appendChild(skipButton);
 
   dialog.appendChild(form);
   document.body.appendChild(dialog);
@@ -111,24 +212,59 @@ function createLoginDialog(
   // Show the dialog
   dialog.showModal();
 
-  return () => {
-    dialog.close();
-    dialog.remove();
+  return {
+    close: () => {
+      dialog.close();
+      dialog.remove();
+    },
+    showError: (message: string) => {
+      errorParagraph.textContent = message;
+    },
+    clearError: () => {
+      errorParagraph.textContent = "";
+    },
   };
 }
 
 const login = async (
   baseUrl: string,
   appId: string,
-): Promise<OpReturnType<paths[Path][Method]>> => {
+): Promise<LoginResponse | null> => {
   return new Promise((resolve) => {
-    const closeDialog = createLoginDialog(async (props) => {
-      const result = await performLogin(baseUrl, appId, props);
-      if (result) {
-        closeDialog();
-        resolve(result);
-      }
-    });
+    const dialog = createLoginDialog(
+      async (props) => {
+        dialog.clearError();
+        const result = await performLogin(baseUrl, appId, props);
+        if (result instanceof ApiError) {
+          dialog.showError(
+            result.data?.detail ?? `Login failed: ${result.status}`,
+          );
+        } else if (result instanceof Error) {
+          dialog.showError(result.message);
+        } else {
+          dialog.close();
+          resolve(result);
+        }
+      },
+      async (props) => {
+        dialog.clearError();
+        const result = await performCreateUser(baseUrl, appId, props);
+        if (result instanceof ApiError) {
+          dialog.showError(
+            result.data?.detail ?? `Create user failed: ${result.status}`,
+          );
+        } else if (result instanceof Error) {
+          dialog.showError(result.message);
+        } else {
+          dialog.close();
+          resolve(result as unknown as LoginResponse);
+        }
+      },
+      () => {
+        dialog.close();
+        resolve(null);
+      },
+    );
   });
 };
 
@@ -139,7 +275,9 @@ const logout = async (baseUrl: string, appId: string) => {
   try {
     await useApiClient(baseUrl, appId, [path, method], () => null);
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
+      console.error(`Logout failed: ${error.status} ${error.data?.detail}`);
+    } else if (error instanceof Error) {
       console.error(`Logout failed: ${error.message}`);
     } else {
       console.error("Logout failed with unknown error", error);
@@ -147,4 +285,4 @@ const logout = async (baseUrl: string, appId: string) => {
   }
 };
 
-export { login, logout, performLogin, createLoginDialog };
+export { login, performLogin, performCreateUser, logout };
