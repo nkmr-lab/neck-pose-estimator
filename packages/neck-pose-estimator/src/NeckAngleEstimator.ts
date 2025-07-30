@@ -3,7 +3,6 @@ import { FaceCapture, type CaptureResult } from "./FaceCapture";
 import { useApiClient } from "./utils/api-client";
 import { components, paths } from "./types/api-schema";
 import { ApiError, OpArgType, OpReturnType } from "openapi-typescript-fetch";
-// import { login } from "./utils/firebase";
 import { EstimateResult } from "./types/estimate";
 import { login } from "./utils";
 
@@ -19,6 +18,13 @@ export class NeckAngleEstimator {
   private interval: number;
   private onEstimateCallback: ((result: EstimateResult) => void) | null = null;
   private onErrorCallback: ((error: ApiError | Error) => void) | null = null;
+  private loginConfig: {
+    basic?: boolean;
+    google?: boolean;
+  } = {
+    basic: true,
+    google: false,
+  };
 
   constructor(options: {
     apiBaseUrl: string;
@@ -32,11 +38,21 @@ export class NeckAngleEstimator {
     calibrateThreshold?: number;
     enforceCalibration?: boolean;
     hideVideo?: boolean;
+    loginConfig?: {
+      basic?: boolean;
+      google?: boolean;
+    };
   }) {
     this.apiBaseUrl = options.apiBaseUrl;
     this.appId = options.appId;
     this.interval = options.interval ?? 500;
     this.calibrationThreshold = options.calibrateThreshold ?? 5;
+    this.loginConfig = {
+      basic:
+        options.loginConfig?.basic === false ? false : this.loginConfig.basic,
+      google:
+        options.loginConfig?.google === false ? false : this.loginConfig.google,
+    };
 
     this.faceCapture = new FaceCapture(
       options.container,
@@ -62,7 +78,7 @@ export class NeckAngleEstimator {
       })
       .catch((err) => {
         if (options.loginOnInit && this.user === null) {
-          login(this.apiBaseUrl, this.appId).then((user) => {
+          login(this.apiBaseUrl, this.appId, this.loginConfig).then((user) => {
             if (user) {
               this.user = user;
             } else {
@@ -90,7 +106,7 @@ export class NeckAngleEstimator {
     }
 
     if (this.loginOnStart && this.user === null) {
-      const user = await login(this.apiBaseUrl, this.appId);
+      const user = await login(this.apiBaseUrl, this.appId, this.loginConfig);
       if (user) {
         this.user = user;
       } else {
