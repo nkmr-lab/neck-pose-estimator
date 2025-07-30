@@ -862,6 +862,8 @@ export interface components {
       password: string;
       /** Email */
       email: string | null;
+      /** Iconurl */
+      iconUrl?: string | null;
       /** Token */
       token: string;
       /**
@@ -876,6 +878,11 @@ export interface components {
        * Format: date-time
        */
       createdAt: string;
+      /**
+       * Updatedat
+       * Format: date-time
+       */
+      updatedAt: string;
     };
     /** UserCalibrate */
     UserCalibrate: {
@@ -900,11 +907,22 @@ export interface components {
       email: string;
       /** Name */
       name: string;
+      /** Iconurl */
+      iconUrl?: string | null;
       /**
        * Isadmin
        * @default false
        */
       isAdmin: boolean;
+    };
+    /** UserUpdate */
+    UserUpdate: {
+      /** Name */
+      name?: string | null;
+      /** Password */
+      password?: string | null;
+      /** Iconurl */
+      iconUrl?: string | null;
     };
     /** ValidationError */
     ValidationError: {
@@ -1511,7 +1529,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["User"];
+        "application/json": components["schemas"]["UserUpdate"];
       };
     };
     responses: {
