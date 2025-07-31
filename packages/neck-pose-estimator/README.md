@@ -112,3 +112,5 @@ startEstimation();
 - `onError(callback: (error: Error) => void): void`: エラー発生時に呼び出されるコールバック関数を登録します。
 - `isLoggedIn(): boolean`: ユーザーが現在ログインしている場合は`true`を返します。
 - `hadCalibrated(): boolean`: ユーザーが基準姿勢をキャリブレーション済みの場合は`true`を返します。
+- `sensor.requestPermission(): Promise<void>`: デバイスの傾きセンサーへのアクセス許可を要求します。ユーザーの明示的なアクションが必要です。
+- `getUserInfo(): Promise<UserInfo | null>`: 現在のユーザー情報を取得します（`password`や`token`は除く）。ログインしていない場合は`null`を返します。
