@@ -52,6 +52,7 @@ export class NeckAngleEstimator {
       basic: options.loginConfig?.basic ?? this.loginConfig.basic,
       google: options.loginConfig?.google ?? this.loginConfig.google,
     };
+    this.onLoginCallback = options.loginCallback ?? null;
 
     this.faceCapture = new FaceCapture(
       options.container,
