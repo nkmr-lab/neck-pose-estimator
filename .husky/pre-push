@@ -1,3 +1,4 @@
+source .env
 pnpm -F "@nkmr-lab/neck-pose-estimator" openapi
 pnpm -F "@nkmr-lab/neck-pose-estimator" lint
 pnpm -F "@nkmr-lab/neck-pose-estimator" test
