@@ -4,6 +4,7 @@ import {
   ApiError,
   NeckAngleEstimator,
   type EstimateResult,
+  type UserInfo,
 } from "@nkmr-lab/neck-pose-estimator";
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
   const [hadInitialized, setHadInitialized] = useState<boolean>(false);
   const [neckAngle, setNeckAngle] = useState<number | null>(null);
   const [posture, setPosture] = useState<EstimateResult | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
     return () => {
@@ -31,8 +33,16 @@ function App() {
       interval: 1000,
       loginOnInit: true,
       loginOnStart: false,
+      loginCallback: (userInfo: UserInfo) => {
+        console.log("User logged in:", userInfo);
+        setUser(userInfo);
+      },
       calibrateThreshold: 5,
       hideVideo: false,
+      loginConfig: {
+        basic: true,
+        google: true,
+      },
     });
     estimator.current.sensor.requestPermission(false);
     setHadInitialized(true);
@@ -68,6 +78,7 @@ function App() {
 
   return (
     <>
+      {user && <h3>{user.name}さん</h3>}
       <div id="estimator-container"></div>
       {!hadInitialized ? (
         <button onClick={initEstimator}>アクセスを許可</button>
