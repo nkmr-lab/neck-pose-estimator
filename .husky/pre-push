@@ -1,3 +1,10 @@
+pnpm -F "@nkmr-lab/neck-pose-estimator" openapi
 pnpm -F "@nkmr-lab/neck-pose-estimator" lint
 pnpm -F "@nkmr-lab/neck-pose-estimator" test
 pnpm -F "@nkmr-lab/neck-pose-estimator" format
+
+if [[ -n "$(git status --porcelain)" ]]; then
+    echo "API schema is out of date. Please run 'pnpm -F @nkmr-lab/neck-pose-estimator openapi' and commit the changes."
+    git diff
+    exit 1
+fi
