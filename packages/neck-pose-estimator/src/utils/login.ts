@@ -19,6 +19,11 @@ type CreateUserResponse = OpReturnType<paths[CreatePath][CreateMethod]>;
 
 const googleLoginPath = "/user/login/google";
 
+export type LoginConfig = {
+  basic?: boolean;
+  google?: boolean | { redirectPath: string };
+};
+
 // --- API Logic ---
 
 async function handleApiCall<T>(
@@ -91,15 +96,12 @@ async function performCreateUser(
   ) as Promise<CreateUserResponse | ApiError | Error>;
 }
 
-function performGoogleLogin(baseUrl: string, redirect_to: string = "/"): void {
+function performGoogleLogin(baseUrl: string, redirectTo: string = "/"): void {
   const basePath = baseUrl.startsWith("http")
     ? baseUrl
     : `${window.location.origin}${baseUrl}`;
   const url = new URL(`${basePath}${googleLoginPath}`);
-  url.searchParams.set(
-    "redirect_to",
-    `${window.location.origin}${redirect_to}`,
-  );
+  url.searchParams.set("redirect_to", `${window.location.origin}${redirectTo}`);
   window.location.href = url.toString();
 }
 
@@ -132,7 +134,7 @@ function createStyledElement<K extends keyof HTMLElementTagNameMap>(
 }
 
 function createLoginDialog(
-  config: { basic?: boolean; google?: boolean },
+  config: LoginConfig,
   handlers: DialogHandlers,
 ): DialogController | null {
   if (!config.basic && !config.google) {
@@ -323,10 +325,7 @@ function createLoginDialog(
 const login = async (
   baseUrl: string,
   appId: string,
-  config: {
-    basic?: boolean;
-    google?: boolean;
-  } = { basic: true, google: true },
+  config: LoginConfig = { basic: true, google: true },
 ): Promise<BasicLoginResponse | null> => {
   return new Promise((resolve) => {
     let dialog: DialogController | null = null;
@@ -365,7 +364,13 @@ const login = async (
       handleGoogleLogin: () => {
         if (!dialog) return;
         dialog.clearError();
-        performGoogleLogin(baseUrl, "/");
+        // NOTE: config.googleがfalsyな場合は、Googleログインを行わないので，config.google = trueの倍のみ"/"
+        const redirectPath =
+          typeof config.google === "object" ? config.google.redirectPath : "/";
+        performGoogleLogin(
+          baseUrl,
+          redirectPath.startsWith("/") ? redirectPath : `/${redirectPath}`,
+        );
         dialog.close();
         resolve(null);
       },

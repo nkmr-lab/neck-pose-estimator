@@ -4,7 +4,7 @@ import { useApiClient } from "./utils/api-client";
 import { components, paths } from "./types/api-schema";
 import { ApiError, OpArgType, OpReturnType } from "openapi-typescript-fetch";
 import { EstimateResult } from "./types/estimate";
-import { login } from "./utils";
+import { login, LoginConfig } from "./utils";
 
 export class NeckAngleEstimator {
   public sensor: DeviceOrientationSensor;
@@ -18,10 +18,7 @@ export class NeckAngleEstimator {
   private interval: number;
   private onEstimateCallback: ((result: EstimateResult) => void) | null = null;
   private onErrorCallback: ((error: ApiError | Error) => void) | null = null;
-  private loginConfig: {
-    basic?: boolean;
-    google?: boolean;
-  } = {
+  private loginConfig: LoginConfig = {
     basic: true,
     google: false,
   };
@@ -38,10 +35,7 @@ export class NeckAngleEstimator {
     calibrateThreshold?: number;
     enforceCalibration?: boolean;
     hideVideo?: boolean;
-    loginConfig?: {
-      basic?: boolean;
-      google?: boolean;
-    };
+    loginConfig?: LoginConfig;
   }) {
     this.apiBaseUrl = options.apiBaseUrl;
     this.appId = options.appId;
