@@ -48,10 +48,8 @@ export class NeckAngleEstimator {
     this.interval = options.interval ?? 500;
     this.calibrationThreshold = options.calibrateThreshold ?? 5;
     this.loginConfig = {
-      basic:
-        options.loginConfig?.basic === false ? false : this.loginConfig.basic,
-      google:
-        options.loginConfig?.google === false ? false : this.loginConfig.google,
+      basic: options.loginConfig?.basic ?? this.loginConfig.basic,
+      google: options.loginConfig?.google ?? this.loginConfig.google,
     };
 
     this.faceCapture = new FaceCapture(
