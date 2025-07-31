@@ -97,8 +97,12 @@ startEstimation();
 - `enforceCalibration` (boolean, 任意): `true`の場合、キャリブレーションが完了するまで推定を開始しません。キャリブレーションを行わない場合は、バックエンドが指定したおよその値を使って推定を行います。デフォルトは`false`。
 - `hideVideo` (boolean, 任意): `true`の場合、映像フィードを非表示にします。デフォルトは`false`。
 - `loginConfig` (object, 任意): ログイン方法の設定。
-  - `basic` (boolean): ベーシック認証を使用するかどうか。デフォルトは`true`。
-  - `google` (boolean): Google認証を使用するかどうか。デフォルトは`false`。（バックエンドのデプロイ先の関係でクロスオリジンへのCookie書き込みとなり動かない可能性があります）
+  - `basic` (boolean，任意): ベーシック認証を使用するかどうか。デフォルトは`true`。
+  - `google` (boolean | object，任意): Google認証を使用するかどうか。デフォルトは`false`。
+    - `redirectPath` (string, 任意): Google認証後のリダイレクトパス。デフォルトは`/`。
+    - **バックエンドのデプロイ先の関係でクロスオリジンへのCookie書き込みとなり動かない可能性があります**
+    - **リダイレクト後許可されていないドメインというエラーが出た場合は管理者にご連絡ください**
+    - **googleログインの場合はuser情報を返すのではなくcookie書き込みのみを行なってリダイレクトされる点に注意**
 
 ### メソッド
 
