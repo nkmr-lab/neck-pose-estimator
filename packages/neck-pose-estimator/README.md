@@ -24,12 +24,24 @@
 
 ## インストール
 
+このライブラリは`@nkmr-lab`のプライベートなnpmパッケージとして提供されています。そのため，`@nkmr-lab`にアクセス権限があるGitHubアカウントの[Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)を使用して、npmの認証を行う必要があります。
+classicでもfine-grainでも構いませんが、`read:packages`のスコープを持つトークンを作成してください。
+pnpmを用いたモノレポの場合はプロジェクトルート，そうでない場合はライブラリを利用するフロントエンドアプリケーションのルートディレクトリに`.npmrc`ファイルを作成し、以下の内容を追加します。
+
+```plaintext
+@nkmr-lab:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+ここで、`${GITHUB_TOKEN}`はあなたのGitHub Personal Access Tokenに置き換えるか，自身の環境変数にセットしてください。
+**直接書き換える場合はGitHubにpushしないように注意してください**
+
 ```bash
-npm install neck-pose-estimator
+npm install @nkmr-lab/neck-pose-estimator
 # or
-yarn add neck-pose-estimator
+yarn add  @nkmr-lab/neck-pose-estimator
 # or
-pnpm add neck-pose-estimator
+pnpm add  @nkmr-lab/neck-pose-estimator
 ```
 
 ## 基本的な使い方
@@ -112,5 +124,5 @@ startEstimation();
 - `onError(callback: (error: Error) => void): void`: エラー発生時に呼び出されるコールバック関数を登録します。
 - `isLoggedIn(): boolean`: ユーザーが現在ログインしている場合は`true`を返します。
 - `hadCalibrated(): boolean`: ユーザーが基準姿勢をキャリブレーション済みの場合は`true`を返します。
-- `sensor.requestPermission(): Promise<void>`: デバイスの傾きセンサーへのアクセス許可を要求します。ユーザーの明示的なアクションが必要です。
+- `sensor.requestPermission(): Promise<void>`: デバイスの傾きセンサーへのアクセス許可を要求します。**ユーザーの明示的なアクションがあった場合に直接呼び出してください。**
 - `getUserInfo(): Promise<UserInfo | null>`: 現在のユーザー情報を取得します（`password`や`token`は除く）。ログインしていない場合は`null`を返します。
