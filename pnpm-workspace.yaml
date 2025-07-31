@@ -2,5 +2,3 @@ packages:
   - packages/*
   - packages/neck-pose-estimator-example/*
 
-overrides:
-  '@nkmr-lab/neck-pose-estimator': link:../../Library/pnpm/global/5/node_modules/@nkmr-lab/neck-pose-estimator
