@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   const initEstimator = useCallback(() => {
-    const apiBaseUrl = "/api";
+    const apiBaseUrl = "/posture-api";
     const appId = import.meta.env.VITE_API_APP_ID || "";
 
     estimator.current = new NeckAngleEstimator({

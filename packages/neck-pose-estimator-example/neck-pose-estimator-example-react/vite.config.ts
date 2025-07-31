@@ -14,18 +14,18 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
       proxy: {
-        "/api": {
+        "/posture-api": {
           target: apiUrl,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
+          rewrite: (path) => path.replace(/^\/posture-api/, ""),
         },
       },
       https: {
         key: fs.readFileSync(
-          path.resolve(__dirname, "../certs/localhost-key.pem")
+          path.resolve(__dirname, "../certs/localhost-key.pem"),
         ),
         cert: fs.readFileSync(
-          path.resolve(__dirname, "../certs/localhost.pem")
+          path.resolve(__dirname, "../certs/localhost.pem"),
         ),
       },
     },
@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         "neck-pose-estimator": path.resolve(
           __dirname,
-          "../../neck-pose-estimator/src"
+          "../../neck-pose-estimator/src",
         ),
       },
     },
