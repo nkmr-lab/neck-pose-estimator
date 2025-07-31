@@ -103,11 +103,12 @@ startEstimation();
 - `width` (number, 任意): video要素の幅。デフォルトは`null`（自動）。
 - `height` (number, 任意): video要素の高さ。デフォルトは`null`（自動）。
 - `interval` (number, 任意): データキャプチャの間隔（ミリ秒）。デフォルトは`500`。
-- `loginOnInit` (boolean, 任意): `true`の場合、インスタンス化時にユーザーにログインを促します。デフォルトは`false`。
-- `loginOnStart` (boolean, 任意): `true`の場合、`start()`呼び出し時にユーザーにログインを促します。デフォルトは`false`。
 - `calibrationThreshold` (number, 任意): 姿勢のキャリブレーションに使用される閾値（**キャリブレーションはデバイスの角度，デバイスに対するユーザの顔の角度が全てこの閾値以下の場合に発火します**）。デフォルトは`5`。
 - `enforceCalibration` (boolean, 任意): `true`の場合、キャリブレーションが完了するまで推定を開始しません。キャリブレーションを行わない場合は、バックエンドが指定したおよその値を使って推定を行います。デフォルトは`false`。
 - `hideVideo` (boolean, 任意): `true`の場合、映像フィードを非表示にします。デフォルトは`false`。
+- `loginOnInit` (boolean, 任意): `true`の場合、インスタンス化時にユーザーにログインを促します。デフォルトは`false`。
+- `loginOnStart` (boolean, 任意): `true`の場合、`start()`呼び出し時にユーザーにログインを促します。デフォルトは`false`。
+- `loginCallback` (function, 任意): ログイン成功時に呼び出されるコールバック関数。デフォルトは`null`。
 - `loginConfig` (object, 任意): ログイン方法の設定。
   - `basic` (boolean，任意): ベーシック認証を使用するかどうか。デフォルトは`true`。
   - `google` (boolean | object，任意): Google認証を使用するかどうか。デフォルトは`false`。
