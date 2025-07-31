@@ -6,6 +6,11 @@ import { ApiError, OpArgType, OpReturnType } from "openapi-typescript-fetch";
 import { EstimateResult } from "./types/estimate";
 import { login, LoginConfig } from "./utils";
 
+export type UserInfo = Pick<
+  components["schemas"]["User"],
+  "name" | "email" | "standardPostureId" | "iconUrl" | "createdAt" | "updatedAt"
+>;
+
 export class NeckAngleEstimator {
   public sensor: DeviceOrientationSensor;
   private user: components["schemas"]["User"] | null = null;
@@ -18,6 +23,7 @@ export class NeckAngleEstimator {
   private interval: number;
   private onEstimateCallback: ((result: EstimateResult) => void) | null = null;
   private onErrorCallback: ((error: ApiError | Error) => void) | null = null;
+  private onLoginCallback: ((user: UserInfo) => void) | null = null;
   private loginConfig: LoginConfig = {
     basic: true,
     google: false,
@@ -32,6 +38,7 @@ export class NeckAngleEstimator {
     container?: HTMLElement | string;
     loginOnInit?: boolean;
     loginOnStart?: boolean;
+    loginCallback?: ((user: UserInfo) => void) | null;
     calibrateThreshold?: number;
     enforceCalibration?: boolean;
     hideVideo?: boolean;
@@ -64,6 +71,7 @@ export class NeckAngleEstimator {
       .then((user) => {
         if (!(user instanceof Error) && user !== null) {
           this.user = user as OpReturnType<paths["/user/login"]["get"]>;
+          this.onLoginCallback?.(this.getUserInfo() as UserInfo);
         } else {
           throw new Error("Failed to fetch user data on initialization");
         }
@@ -73,6 +81,7 @@ export class NeckAngleEstimator {
           login(this.apiBaseUrl, this.appId, this.loginConfig).then((user) => {
             if (user) {
               this.user = user;
+              this.onLoginCallback?.(this.getUserInfo() as UserInfo);
             } else {
               console.warn("User login failed, proceeding as guest.");
               this.user = null;
@@ -101,6 +110,7 @@ export class NeckAngleEstimator {
       const user = await login(this.apiBaseUrl, this.appId, this.loginConfig);
       if (user) {
         this.user = user;
+        this.onLoginCallback?.(this.getUserInfo() as UserInfo);
       } else {
         console.warn("User login failed, proceeding as guest.");
         this.user = null;
@@ -134,15 +144,7 @@ export class NeckAngleEstimator {
     return this.user === null || this.user.standardPostureId !== null;
   }
 
-  getUserInfo(): Pick<
-    components["schemas"]["User"],
-    | "name"
-    | "email"
-    | "standardPostureId"
-    | "iconUrl"
-    | "createdAt"
-    | "updatedAt"
-  > | null {
+  getUserInfo(): UserInfo | null {
     return this.user
       ? {
           name: this.user.name,
