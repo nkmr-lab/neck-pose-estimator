@@ -134,6 +134,27 @@ export class NeckAngleEstimator {
     return this.user === null || this.user.standardPostureId !== null;
   }
 
+  getUserInfo(): Pick<
+    components["schemas"]["User"],
+    | "name"
+    | "email"
+    | "standardPostureId"
+    | "iconUrl"
+    | "createdAt"
+    | "updatedAt"
+  > | null {
+    return this.user
+      ? {
+          name: this.user.name,
+          email: this.user.email,
+          standardPostureId: this.user.standardPostureId,
+          createdAt: this.user.createdAt,
+          updatedAt: this.user.updatedAt,
+          iconUrl: this.user.iconUrl,
+        }
+      : null;
+  }
+
   private async handleEstimate(capture: CaptureResult) {
     if (
       this.enforceCalibration &&
