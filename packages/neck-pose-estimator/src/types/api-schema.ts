@@ -1349,7 +1349,9 @@ export interface operations {
       query?: {
         redirect_to?: string;
       };
-      header?: never;
+      header?: {
+        referer?: string | null;
+      };
       path?: never;
       cookie?: never;
     };
@@ -1360,7 +1362,17 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
+        content?: never;
+      };
+      /** @description "Bad Request" */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
+          /** @example {
+           *       "detail": "Bad Request"
+           *     } */
           "application/json": unknown;
         };
       };
@@ -1392,9 +1404,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": unknown;
-        };
+        content?: never;
       };
       /** @description "Bad Request" */
       400: {
