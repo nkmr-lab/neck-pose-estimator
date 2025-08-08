@@ -6,7 +6,7 @@
 
 ## ワークスペース構成
 
-- `packages/neck-pose-estimator`: コアライブラリ。npm への公開を想定しています。バックエンド API に接続し、首の角度を推定する`PostureEstimator`クラスを提供します。
+- `packages/neck-pose-estimator`: コアライブラリ。@nkmr-labのprivate GitHub Packagesとして公開しています。バックエンド API に接続し、首の角度を推定する`NeckAngleEstimator`クラスを提供します。
   - ライブラリの使い方や詳細は [README](packages/neck-pose-estimator/README.md) を参照してください。
 - `packages/neck-pose-estimator-example`: `neck-pose-estimator`ライブラリを使用したサンプルアプリケーションが含まれています。
   - `neck-pose-estimator-example-react`: Vite で構築された React アプリケーションです。

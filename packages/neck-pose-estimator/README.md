@@ -25,7 +25,7 @@
 ## インストール
 
 このライブラリは`@nkmr-lab`のプライベートなnpmパッケージとして提供されています。そのため，`@nkmr-lab`にアクセス権限があるGitHubアカウントの[Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)を使用して、npmの認証を行う必要があります。
-classicでもfine-grainでも構いませんが、`read:packages`のスコープを持つトークンを作成してください。
+classicなtokenで、`read:packages`のスコープを持つトークンを作成してください。
 pnpmを用いたモノレポの場合はプロジェクトルート，そうでない場合はライブラリを利用するフロントエンドアプリケーションのルートディレクトリに`.npmrc`ファイルを作成し、以下の内容を追加します。
 
 ```plaintext
@@ -46,16 +46,16 @@ pnpm add  @nkmr-lab/neck-pose-estimator
 
 ## 基本的な使い方
 
-`PostureEstimator`の基本的な使用例です。
+`NeckAngleEstimator`の基本的な使用例です。
 
 ```typescript
-import { PostureEstimator } from "neck-pose-estimator";
+import { NeckAngleEstimator } from "neck-pose-estimator";
 
 // 映像を表示するコンテナ要素を取得
 const videoContainer = document.getElementById("video-container");
 
 // Estimatorをインスタンス化
-const estimator = new PostureEstimator({
+const estimator = new NeckAngleEstimator({
   apiBaseUrl: "https://your-api.example.com", // APIのベースURL
   appId: "your-app-id", // アプリケーションID
   container: videoContainer, // (任意) 映像を追記する要素。デフォルトは document.body
@@ -91,9 +91,9 @@ startEstimation();
 
 ## APIリファレンス
 
-### `new PostureEstimator(options)`
+### `new NeckAngleEstimator(options)`
 
-新しい`PostureEstimator`インスタンスを作成します。
+新しい`NeckAngleEstimator`インスタンスを作成します。
 
 **オプション:**
 
@@ -115,7 +115,7 @@ startEstimation();
     - `redirectPath` (string, 任意): Google認証後のリダイレクトパス。デフォルトは`/`。
     - **バックエンドのデプロイ先の関係でクロスオリジンへのCookie書き込みとなり動かない可能性があります**
     - **リダイレクト後許可されていないドメインというエラーが出た場合は管理者にご連絡ください**
-    - **googleログインの場合はuser情報を返すのではなくcookie書き込みのみを行なってリダイレクトされる点に注意**
+    - **googleログインの場合はuser情報を返すのではなくcookie書き込みのみを行なってリダイレクトされる点に注意（ページレンダリング時に`/user/login`のリクエストを送ることを推奨します）**
 
 ### メソッド
 
