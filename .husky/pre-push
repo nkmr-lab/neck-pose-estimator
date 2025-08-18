@@ -4,8 +4,8 @@ pnpm -F "@nkmr-lab/neck-pose-estimator" lint
 pnpm -F "@nkmr-lab/neck-pose-estimator" test
 pnpm -F "@nkmr-lab/neck-pose-estimator" format
 
-if [[ -n "$(git status --porcelain)" ]]; then
-    echo "API schema is out of date. Please run 'pnpm -F @nkmr-lab/neck-pose-estimator openapi' and commit the changes."
-    git diff
+if [[ -n "$(git status --porcelain packages/neck-pose-estimator/src/types/api-schema.ts)" ]]; then
+    echo "API schema (packages/neck-pose-estimator/src/types/api-schema.ts) is out of date. Please run 'pnpm -F @nkmr-lab/neck-pose-estimator openapi' and commit the changes."
+    git diff packages/neck-pose-estimator/src/types/api-schema.ts
     exit 1
 fi
