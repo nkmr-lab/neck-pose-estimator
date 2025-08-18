@@ -48,8 +48,27 @@ pnpm add  @nkmr-lab/neck-pose-estimator
 
 `NeckAngleEstimator`の基本的な使用例です。
 
-```typescript
-import { NeckAngleEstimator } from "neck-pose-estimator";
+```html:index.html
+<!DOCTYPE html>
+<html lang="ja"></html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neck Angle Estimator Example</title>
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <h1>Neck Angle Estimator Example</h1>
+  <div id="video-container"></div>
+  <p>カメラの映像が表示されます。</p>
+  <button onclick="startEstimation()">推定を開始</button>
+  <button onclick="stopEstimation()">推定を停止</button>
+</body>
+</html>
+```
+
+```javascript:main.js
+import { NeckAngleEstimator } from "@nkmr-lab/neck-pose-estimator";
 
 // 映像を表示するコンテナ要素を取得
 const videoContainer = document.getElementById("video-container");
@@ -62,16 +81,62 @@ const estimator = new NeckAngleEstimator({
   loginOnStart: true, // (任意) start()時にログインを要求するか。デフォルトは false
 });
 
-// イベントリスナーを設定
+/**
+ * イベントリスナーを設定
+ * @param {object} result - 推定結果，型定義上はnullを許容しているが推定結果は常に存在する
+ *   @param {number} result.id - 推定結果のID
+ *   @param {number} result.userId - ユーザーID
+ *   @param {string | null} result.fileName - キャプチャされた画像のファイル名
+ *   @param {number | null} result.neckAngle - 推定された首の角度（度単位）
+ *   @param {number | null} result.sensorAlpha - デバイスの傾きセンサーのアルファ値
+ *   @param {number | null} result.sensorBeta - デバイスの傾きセンサーのベータ値
+ *   @param {number | null} result.sensorGamma - デバイスの傾きセンサーのガンマ値
+ *   @param {number | null} result.facePitch - 顔のピッチ角度（度単位）
+ *   @param {number | null} result.faceYaw - 顔のヨー角度（度単位）
+ *  @param {number | null} result.faceRoll - 顔のロール角度（度単位）
+ *   @param {number | null} result.noseX - 鼻のX座標
+ *   @param {number | null} result.noseY - 鼻のY座標
+ *   @param {number | null} result.neckX - 首のX座標
+ *   @param {number | null} result.neckY - 首のY座標
+ *   @param {number | null} result.imageWidth - キャプチャされた画像の幅
+ *   @param {number | null} result.imageHeight - キャプチャされた画像の高さ
+ *   @param {number | null} result.neckToNose - 首から鼻までの距離（ピクセル単位）
+ *   @param {number | null} result.standardDistance - 標準距離（ピクセル単位）
+ *   @param {string | null} result.createdAt - 推定結果の作成日時（ISO 8601形式）
+ *   @param {string} result.updatedAt - 推定結果の更新日時（ISO 8601形式）
+ *   @param {string} result.appId - アプリケーションID
+ * @returns {void}
+ */
 estimator.onEstimate((result) => {
-  console.log("姿勢が推定されました:", result);
+  if (result.neckAngle === null) {
+    // キャリブレーションのた中は首の角度が推定されない
+    console.log("キャリブレーション中です");
+  } else {
+    if (result.neckAngle > 60) {
+      console.warn("首の角度が大きすぎます:", result.neckAngle);
+    } else if (result.neckAngle > 30) {
+      console.warn("首の角度が少し大きいです:", result.neckAngle);
+    } else if (result.neckAngle > 15) {
+      console.log("首の角度は正常です:", result.neckAngle);
+    } else {
+      console.log("首の角度がとても良いです:", result.neckAngle);
+    }
+  }
 });
 
+/**
+ * エラーリスナーを設定
+ * @param {Error | ApiError} error - 発生したエラー
+ */
 estimator.onError((error) => {
-  console.error("推定エラー:", error);
+  if (data in error) {
+    console.error("APIエラー:", error.data);
+  } else {
+    console.error("推定エラー:", error);
+  }
 });
 
-// 推定プロセスを開始
+// 推定プロセスを開始，ボタンのクリック時に発火
 async function startEstimation() {
   try {
     await estimator.sensor.requestPermission(); // センサーのパーミッションを要求
@@ -83,10 +148,10 @@ async function startEstimation() {
   }
 }
 
-startEstimation();
-
 // 推定を停止する場合
-// estimator.stop();
+function stopEstimation() {
+  estimator.stop();
+}
 ```
 
 ## APIリファレンス
