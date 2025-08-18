@@ -48,9 +48,9 @@ function App() {
     setHadInitialized(true);
   }, []);
 
-  const handleEstimated = useCallback((result: EstimateResult | null) => {
+  const handleEstimated = useCallback((result: EstimateResult) => {
     console.log("Estimated result:", result);
-    if (result?.neckAngle) {
+    if (result.neckAngle) {
       setNeckAngle(result.neckAngle);
       setPosture(result);
     }
