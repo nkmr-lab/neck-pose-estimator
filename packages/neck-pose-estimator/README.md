@@ -93,11 +93,15 @@ const estimator = new NeckAngleEstimator({
  *   @param {number | null} result.sensorGamma - デバイスの傾きセンサーのガンマ値
  *   @param {number | null} result.facePitch - 顔のピッチ角度（度単位）
  *   @param {number | null} result.faceYaw - 顔のヨー角度（度単位）
- *  @param {number | null} result.faceRoll - 顔のロール角度（度単位）
+ *   @param {number | null} result.faceRoll - 顔のロール角度（度単位）
  *   @param {number | null} result.noseX - 鼻のX座標
  *   @param {number | null} result.noseY - 鼻のY座標
  *   @param {number | null} result.neckX - 首のX座標
  *   @param {number | null} result.neckY - 首のY座標
+ *   @param {number | null} result.leftEyeX - 左目のX座標
+ *   @param {number | null} result.leftEyeY - 左目のY座標
+ *   @param {number | null} result.rightEyeX - 右目のX座標
+ *   @param {number | null} result.rightEyeY - 右目のY座標
  *   @param {number | null} result.imageWidth - キャプチャされた画像の幅
  *   @param {number | null} result.imageHeight - キャプチャされた画像の高さ
  *   @param {number | null} result.neckToNose - 首から鼻までの距離（ピクセル単位）
