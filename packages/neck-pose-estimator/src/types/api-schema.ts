@@ -680,6 +680,14 @@ export interface components {
       neckX: number | null;
       /** Necky */
       neckY: number | null;
+      /** Lefteyex */
+      leftEyeX: number | null;
+      /** Lefteyey */
+      leftEyeY: number | null;
+      /** Righteyex */
+      rightEyeX: number | null;
+      /** Righteyey */
+      rightEyeY: number | null;
       /** Imagewidth */
       imageWidth: number | null;
       /** Imageheight */
