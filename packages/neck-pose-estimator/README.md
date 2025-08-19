@@ -48,6 +48,94 @@ pnpm add  @nkmr-lab/neck-pose-estimator
 
 `NeckAngleEstimator`の基本的な使用例です。
 
+### ESMなどを使う場合
+
+`NeckAngleEstimator`をESMモジュールとしてインポートし、使用することができます。
+
+```javascript:main.js
+import { NeckAngleEstimator } from "@nkmr-lab/neck-pose-estimator";
+
+// 映像を表示するコンテナ要素を取得
+const videoContainer = document.getElementById("video-container");
+
+// Estimatorをインスタンス化
+const estimator = new NeckAngleEstimator({
+  apiBaseUrl: "https://your-api-domain.com/path/to/api", // APIのベースURL，CORSを考慮するとプロキシする必要がある
+  appId: "your-app-id", // アプリケーションID
+  container: videoContainer, // (任意) 映像を追記する要素。デフォルトは document.body
+  loginOnStart: true, // (任意) start()時にログインを要求するか。デフォルトは false
+});
+
+/**
+ * イベントリスナーを設定
+ * @param {object} result - 推定結果
+ *   @param {number} result.neckAngle - 推定された首の角度（度単位）
+ */
+estimator.onEstimate((result) => {
+  if (result.neckAngle === null) {
+    // キャリブレーションのた中は首の角度が推定されない
+    console.log("キャリブレーション中です");
+  } else {
+    console.log("推定された首の角度:", result.neckAngle);
+  }
+});
+
+/**
+ * エラーリスナーを設定
+ * @param {Error} error - 発生したエラー
+ */
+estimator.onError((error) => {
+  console.error("推定エラー:", error);
+});
+
+// 推定プロセスを開始
+async function startEstimation() {
+  try {
+    await estimator.sensor.requestPermission(); // センサーのパーミッションを要求
+    await estimator.start();
+    console.log("推定を開始しました。");
+  } catch (error) {
+    console.error("推定の開始に失敗しました:", error);
+    // カメラやセンサーのパーミッションが拒否された場合などのエラーを処理
+  }
+}
+document
+  .getElementById("start-button")
+  .addEventListener("click", startEstimation);
+
+// 推定を停止する場合
+function stopEstimation() {
+  estimator.stop();
+}
+document
+  .getElementById("stop-button")
+  .addEventListener("click", stopEstimation);
+```
+
+### 素のJavaScriptで使う場合
+
+素のjsでnpm packageを使う場合はバンドルツールを使ってビルドする必要があります。
+以下は、Viteを使用してビルドする例です。
+
+```javascript:__index.js
+import { NeckAngleEstimator } from "@nkmr-lab/neck-pose-estimator";
+window.NeckAngleEstimator = NeckAngleEstimator; // グローバルに登録する場合
+```
+
+```javascript:vite.config.js
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  build: {
+    lib: {
+      entry: "__index.js",
+      name: "NeckPoseEstimator",
+      fileName: "neck-pose-estimator",
+    },
+  },
+});
+```
+
 ```html:index.html
 <!DOCTYPE html>
 <html lang="ja"></html>
@@ -55,21 +143,21 @@ pnpm add  @nkmr-lab/neck-pose-estimator
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neck Angle Estimator Example</title>
-  <script type="module" src="./main.js"></script>
+  <!-- ビルドされたjsファイルを読み込む -->
+  <script defer src="/dist/neck-pose-estimator.umd.js"></script>
+  <script defer src="./main.js"></script>
 </head>
 <body>
   <h1>Neck Angle Estimator Example</h1>
   <div id="video-container"></div>
   <p>カメラの映像が表示されます。</p>
-  <button onclick="startEstimation()">推定を開始</button>
-  <button onclick="stopEstimation()">推定を停止</button>
+  <button id="start-button">推定を開始</button>
+  <button id="stop-button">推定を停止</button>
 </body>
 </html>
 ```
 
 ```javascript:main.js
-import { NeckAngleEstimator } from "@nkmr-lab/neck-pose-estimator";
-
 // 映像を表示するコンテナ要素を取得
 const videoContainer = document.getElementById("video-container");
 
@@ -151,11 +239,18 @@ async function startEstimation() {
     // カメラやセンサーのパーミッションが拒否された場合などのエラーを処理
   }
 }
+document
+  .getElementById("start-button")
+  .addEventListener("click", startEstimation);
 
 // 推定を停止する場合
 function stopEstimation() {
   estimator.stop();
 }
+document
+  .getElementById("stop-button")
+  .addEventListener("click", stopEstimation);
+
 ```
 
 ## APIリファレンス
