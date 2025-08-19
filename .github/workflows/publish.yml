@@ -62,6 +62,8 @@ jobs:
         run: pnpm -F "@nkmr-lab/neck-pose-estimator" build
 
       - name: Publish to GitHub Packages
-        run: pnpm -F "@nkmr-lab/neck-pose-estimator" publish --no-git-checks
+        run: |
+          pnpm -F "@nkmr-lab/neck-pose-estimator" version patch
+          pnpm -F "@nkmr-lab/neck-pose-estimator" publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
