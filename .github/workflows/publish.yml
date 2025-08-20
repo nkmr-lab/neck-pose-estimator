@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages
+name: Bump Version and Publish to GitHub Packages
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -27,9 +27,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22.17" # Specify Node.js version
+          node-version: "22.18" # Specify Node.js version
           cache: "pnpm"
           registry-url: "https://npm.pkg.github.com"
+          scope: "@nkmr-lab"
 
       - name: Install dependencies
         run: pnpm install
@@ -61,9 +62,21 @@ jobs:
       - name: Build package
         run: pnpm -F "@nkmr-lab/neck-pose-estimator" build
 
-      - name: Publish to GitHub Packages
+      - name: Configure Git
         run: |
-          pnpm -F "@nkmr-lab/neck-pose-estimator" version patch
-          pnpm -F "@nkmr-lab/neck-pose-estimator" publish --no-git-checks
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        run: pnpm -F "@nkmr-lab/neck-pose-estimator" version patch
+        env:
+          GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push changes
+        run: git push --follow-tags
+
+      - name: Publish to GitHub Packages
+        run: pnpm --filter "@nkmr-lab/neck-pose-estimator" publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
