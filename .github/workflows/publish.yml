@@ -72,7 +72,7 @@ jobs:
 
       - name: Bump version
         run: |
-          pnpm -F "@nkmr-lab/neck-pose-estimator" version patch -m "chore(release): Bump version to %s [skip ci]"
+          pnpm --filter "@nkmr-lab/neck-pose-estimator" version patch -m "chore(release): Bump version to %s [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
