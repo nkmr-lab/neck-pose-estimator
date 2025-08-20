@@ -36,7 +36,7 @@ jobs:
           scope: "@nkmr-lab"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --filter "@nkmr-lab/neck-pose-estimator" --frozen-lockfile
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
