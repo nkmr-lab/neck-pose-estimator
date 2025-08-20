@@ -65,19 +65,25 @@ jobs:
       - name: Build package
         run: pnpm -F "@nkmr-lab/neck-pose-estimator" build
 
+      - name: Copy .npmrc to package directory
+        run: cp .npmrc packages/neck-pose-estimator/.npmrc
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Bump version
-        run: |
-          pnpm --filter "@nkmr-lab/neck-pose-estimator" version patch -m "chore(release): Bump version to %s [skip ci]"
+        working-directory: packages/neck-pose-estimator
+        run: pnpm version patch
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Push changes
-        run: git push --follow-tags --no-verify
+      - name: Commit and Push changes
+        run: |
+          git add packages/neck-pose-estimator/package.json packages/neck-pose-estimator/package-lock.json
+          git commit -m "chore(release): bump version [skip ci]"
+          git push --follow-tags --no-verify
 
       - name: Publish to GitHub Packages
         run: pnpm --filter "@nkmr-lab/neck-pose-estimator" publish --no-git-checks
