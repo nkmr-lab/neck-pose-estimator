@@ -92,6 +92,12 @@ describe("NeckAngleEstimator", () => {
       "test-app",
       ["/posture/estimate", "post"],
       expect.any(Function),
+      {},
+      {
+        query: {
+          enforce_calibration: false,
+        },
+      },
     );
     expect(onEstimateCallback).toHaveBeenCalledWith(postureFixture.posture);
   });
