@@ -246,7 +246,9 @@ export class NeckAngleEstimator {
           this.appId,
           ["/user/calibrate", "put"],
           () =>
-            formData as unknown as OpArgType<paths["/user/calibrate"]["put"]>,
+            ({ standardPostureId: feature.id }) as OpArgType<
+              paths["/user/calibrate"]["put"]
+            >,
         );
         if (calibrate instanceof Error || calibrate === null) {
           console.error("Failed to calibrate user posture:", calibrate);
