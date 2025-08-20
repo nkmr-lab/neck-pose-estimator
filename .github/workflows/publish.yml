@@ -82,7 +82,7 @@ jobs:
       - name: Commit and Push changes
         run: |
           git add packages/neck-pose-estimator/package.json
-          git commit -m "chore(release): bump version [skip ci]"
+          git commit -m "chore(release): bump version [skip ci]" --no-verify
           git push --follow-tags --no-verify
 
       - name: Publish to GitHub Packages
