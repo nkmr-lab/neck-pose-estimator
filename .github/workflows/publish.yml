@@ -36,7 +36,7 @@ jobs:
           scope: "@nkmr-lab"
 
       - name: Install dependencies
-        run: pnpm install --filter "@nkmr-lab/neck-pose-estimator" --frozen-lockfile
+        run: pnpm install
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -75,10 +75,7 @@ jobs:
 
       - name: Bump version
         working-directory: packages/neck-pose-estimator
-        run: |
-          CURRENT=$(pnpm pkg get version | jq -r .)
-          NEXT=$(echo $CURRENT | awk -F. '{print $1"."$2"."$3+1}')
-          pnpm pkg set version=$NEXT
+        run: ./scripts/bump-version.sh
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
