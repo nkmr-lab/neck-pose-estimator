@@ -192,6 +192,12 @@ export class NeckAngleEstimator {
                 formData as unknown as OpArgType<
                   paths["/posture/estimate"]["post"]
                 >,
+              {},
+              {
+                query: {
+                  enforce_calibration: this.enforceCalibration,
+                },
+              },
             );
 
       if (res instanceof Error) {
