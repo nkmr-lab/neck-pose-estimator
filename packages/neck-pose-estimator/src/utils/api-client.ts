@@ -82,10 +82,20 @@ export const useApiClient = async <
       },
       credentials: "include",
     })
-      .then(
-        (res) =>
-          res.json() as Promise<OpReturnType<paths[Path][Method]> | ApiError>,
-      )
+      .then((res) => {
+        if (res.ok === false || res.status >= 400) {
+          throw new ApiError({
+            status: res.status,
+            statusText: res.statusText,
+            url: res.url,
+            headers: res.headers,
+            data: res.json().then((data) => data),
+          });
+        }
+        return res.json() as Promise<
+          OpReturnType<paths[Path][Method]> | ApiError
+        >;
+      })
       .catch((err) => {
         if (err instanceof ApiError) {
           console.error(
