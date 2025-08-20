@@ -11,7 +11,8 @@ on:
       - ".prettierrc"
 
 jobs:
-  publish:
+  bump-version-and-publish:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -20,6 +21,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -68,7 +71,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Bump version
-        run: pnpm -F "@nkmr-lab/neck-pose-estimator" version patch
+        run: |
+          pnpm -F "@nkmr-lab/neck-pose-estimator" version patch -m "chore(release): Bump version to %s [skip ci]"
         env:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
