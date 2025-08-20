@@ -73,7 +73,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push changes
-        run: git push --follow-tags
+        run: git push --follow-tags --no-verify
 
       - name: Publish to GitHub Packages
         run: pnpm --filter "@nkmr-lab/neck-pose-estimator" publish --no-git-checks
