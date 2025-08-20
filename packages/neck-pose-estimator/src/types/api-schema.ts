@@ -1869,7 +1869,9 @@ export interface operations {
   };
   estimate_posture_posture_estimate_post: {
     parameters: {
-      query?: never;
+      query?: {
+        enforce_calibration?: boolean;
+      };
       header?: {
         "app-id"?: string;
       };
