@@ -798,11 +798,11 @@ export interface components {
     /** PostureOnlySensor */
     PostureOnlySensor: {
       /** Alpha */
-      alpha: number | null;
+      alpha: number;
       /** Beta */
-      beta: number | null;
+      beta: number;
       /** Gamma */
-      gamma: number | null;
+      gamma: number;
     };
     /** PostureRankingItem */
     PostureRankingItem: {
