@@ -101,7 +101,6 @@ export class NeckAngleEstimator {
 
     try {
       await this.sensor.requestPermission();
-      this.sensor.start();
     } catch (err) {
       console.error("Device orientation permission denied:", err);
       throw new Error(`Device orientation permission denied: ${err}`);
