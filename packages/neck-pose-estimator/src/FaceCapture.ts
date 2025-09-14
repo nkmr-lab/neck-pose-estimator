@@ -15,7 +15,7 @@ export class FaceCapture {
   private container: HTMLElement;
   private stream: MediaStream | null = null;
   private intervalId: number | null = null;
-  private isIOS: boolean = false;
+  private isIOSSafari: boolean = false;
   private sizeConfig: {
     width?: number;
     height?: number;
@@ -53,7 +53,13 @@ export class FaceCapture {
     } else {
       this.container = document.body; // デフォルトはbody要素
     }
-    this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const ua = navigator.userAgent;
+    this.isIOSSafari =
+      /iPad|iPhone|iPod/.test(ua) &&
+      ua.includes("Safari") &&
+      !ua.includes("CriOS") &&
+      !ua.includes("FxiOS") &&
+      !ua.includes("EdgiOS");
     this.width = width;
     this.height = height;
     this.sizeConfig = this.getVideoSizeConfig();
@@ -83,7 +89,7 @@ export class FaceCapture {
   }
 
   getVideoSizeConfig() {
-    return this.isIOS
+    return this.isIOSSafari
       ? {
           width: this.width ?? this.DEFAULT_WIDTH,
           height: this.height ?? this.DEFAULT_HEIGHT,
