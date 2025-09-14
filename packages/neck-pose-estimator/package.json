@@ -1,6 +1,6 @@
 {
   "name": "@nkmr-lab/neck-pose-estimator",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
