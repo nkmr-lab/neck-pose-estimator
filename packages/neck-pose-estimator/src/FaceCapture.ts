@@ -13,11 +13,13 @@ export class FaceCapture {
 
   private readonly ID_PREFIX = "face-capture-";
   private readonly ID_LENGTH = 8;
+  private readonly DEFAULT_WIDTH = 320;
+  private readonly DEFAULT_HEIGHT = 240;
 
   constructor(
     private _container: HTMLElement | string | undefined,
-    private width: number | null = 320,
-    private height: number | null = 240,
+    private width: number | null = this.DEFAULT_WIDTH,
+    private height: number | null = this.DEFAULT_HEIGHT,
     private options?: {
       hideVideo?: boolean;
     },
@@ -44,8 +46,8 @@ export class FaceCapture {
     this.width = width;
     this.height = height;
     this.video = document.createElement("video");
-    this.video.width = width ?? document.body.clientWidth / 2;
-    this.video.height = height ?? document.body.clientHeight / 2;
+    this.video.width = width ?? this.DEFAULT_WIDTH;
+    this.video.height = height ?? this.DEFAULT_HEIGHT;
     this.video.id = `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`;
     Object.assign(this.video, {
       muted: true,
