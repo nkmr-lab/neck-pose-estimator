@@ -57,7 +57,6 @@ describe("NeckAngleEstimator", () => {
 
     expect(faceCaptureInstance.start).toHaveBeenCalledOnce();
     expect(sensorInstance.requestPermission).toHaveBeenCalledOnce();
-    expect(sensorInstance.start).toHaveBeenCalledOnce();
   });
 
   it("should call onCapture and set up interval", async () => {

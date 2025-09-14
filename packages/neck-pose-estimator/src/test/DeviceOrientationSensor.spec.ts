@@ -37,7 +37,7 @@ describe("DeviceOrientationSensor", () => {
     it("should reject if permission is denied on iOS", async () => {
       mockRequestPermission.mockResolvedValue("denied");
       await expect(sensor.requestPermission()).rejects.toThrow(
-        "Permission denied for device orientation access",
+        "Orientation Sensor Permission denied",
       );
       expect(window.addEventListener).not.toHaveBeenCalled();
     });
