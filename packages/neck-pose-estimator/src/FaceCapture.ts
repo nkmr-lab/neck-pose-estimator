@@ -44,6 +44,8 @@ export class FaceCapture {
     this.width = width;
     this.height = height;
     this.video = document.createElement("video");
+    this.video.width = width ?? document.body.clientWidth / 2;
+    this.video.height = height ?? document.body.clientHeight / 2;
     this.video.id = `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`;
     Object.assign(this.video, {
       muted: true,
