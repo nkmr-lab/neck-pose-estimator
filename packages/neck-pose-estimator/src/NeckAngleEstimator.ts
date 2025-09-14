@@ -99,11 +99,18 @@ export class NeckAngleEstimator {
     const videoOk = await this.faceCapture.start();
     if (!videoOk) throw new Error("Camera permission denied");
 
-    try {
-      await this.sensor.requestPermission();
-    } catch (err) {
-      console.error("Device orientation permission denied:", err);
-      throw new Error(`Device orientation permission denied: ${err}`);
+    // NOTE: ユーザの明示的なアクションがあった場合に直接呼び出さなければならないため、コメントアウト
+    //       ライブラリの利用側でinstance.sensor.requestPermission()を呼び出すこと
+    // try {
+    //   await this.sensor.requestPermission();
+    // } catch (err) {
+    //   console.error("Device orientation permission denied:", err);
+    //   throw new Error(`Device orientation permission denied: ${err}`);
+    // }
+    if (!this.sensor.isPermitted()) {
+      const errorMessage = "Access to device orientation is not allowed";
+      console.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     if (this.loginOnStart && this.user === null) {

@@ -29,7 +29,7 @@ describe("NeckAngleEstimator", () => {
     }));
 
     (DeviceOrientationSensor as Mock).mockImplementation(() => ({
-      requestPermission: vi.fn().mockResolvedValue(undefined),
+      isPermitted: vi.fn().mockReturnValue(true),
       start: vi.fn(),
       stop: vi.fn(),
       get: vi.fn().mockReturnValue({ alpha: 0, beta: 0, gamma: 0 }),
@@ -50,16 +50,20 @@ describe("NeckAngleEstimator", () => {
   });
 
   it("should start face capture and sensor on start()", async () => {
-    await estimator.start();
     const faceCaptureInstance = (FaceCapture as Mock).mock.results[0].value;
     const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
       .value;
+    sensorInstance.isPermitted.mockReturnValue(true);
+    await estimator.start();
 
     expect(faceCaptureInstance.start).toHaveBeenCalledOnce();
-    expect(sensorInstance.requestPermission).toHaveBeenCalledOnce();
+    expect(sensorInstance.isPermitted).toHaveBeenCalledOnce();
   });
 
   it("should call onCapture and set up interval", async () => {
+    const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
+      .value;
+    sensorInstance.isPermitted.mockReturnValue(true);
     await estimator.start();
     const faceCaptureInstance = (FaceCapture as Mock).mock.results[0].value;
     expect(faceCaptureInstance.onCapture).toHaveBeenCalledWith(
@@ -71,6 +75,9 @@ describe("NeckAngleEstimator", () => {
   it("should handle estimation when a frame is captured", async () => {
     const onEstimateCallback = vi.fn();
     estimator.onEstimate(onEstimateCallback);
+    const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
+      .value;
+    sensorInstance.isPermitted.mockReturnValue(true);
 
     await estimator.start();
 
@@ -107,6 +114,10 @@ describe("NeckAngleEstimator", () => {
     const apiError = new Error("API failure");
     mockUseApiClient.mockResolvedValue(apiError);
 
+    const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
+      .value;
+    sensorInstance.isPermitted.mockReturnValue(true);
+
     await estimator.start();
     const faceCaptureInstance = (FaceCapture as Mock).mock.results[0].value;
     const onCaptureCallback = faceCaptureInstance.onCapture.mock.calls[0][1];
@@ -127,18 +138,16 @@ describe("NeckAngleEstimator", () => {
     await expect(estimator.start()).rejects.toThrow("Camera permission denied");
   });
 
-  it("should throw an error if device orientation permission is denied", async () => {
+  it("should throw an error if device orientation permission is not allowed", async () => {
     const consoleErrorSpy = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
     const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
       .value;
-    const error = new Error("Permission denied by user");
-    sensorInstance.requestPermission.mockRejectedValue(error);
+    const error = new Error("Access to device orientation is not allowed");
+    sensorInstance.isPermitted.mockReturnValue(false);
 
-    await expect(estimator.start()).rejects.toThrow(
-      `Device orientation permission denied: ${error}`,
-    );
+    await expect(estimator.start()).rejects.toThrow(error);
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
@@ -154,7 +163,7 @@ describe("NeckAngleEstimator", () => {
     const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
       .value;
     faceCaptureInstance.start.mockResolvedValue(true);
-    sensorInstance.requestPermission.mockResolvedValue();
+    sensorInstance.isPermitted.mockReturnValue(true);
 
     await estimator.start();
 
@@ -162,12 +171,14 @@ describe("NeckAngleEstimator", () => {
   });
 
   it("should stop everything on stop()", async () => {
+    const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
+      .value;
+    sensorInstance.isPermitted.mockReturnValue(true);
+
     await estimator.start();
     estimator.stop();
 
     const faceCaptureInstance = (FaceCapture as Mock).mock.results[0].value;
-    const sensorInstance = (DeviceOrientationSensor as Mock).mock.results[0]
-      .value;
 
     expect(faceCaptureInstance.stop).toHaveBeenCalledOnce();
     expect(sensorInstance.stop).toHaveBeenCalledOnce();

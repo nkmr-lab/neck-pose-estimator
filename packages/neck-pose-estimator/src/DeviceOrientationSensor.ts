@@ -47,6 +47,10 @@ export class DeviceOrientationSensor {
     }
   }
 
+  public isPermitted(): boolean {
+    return this.permitted;
+  }
+
   public start() {
     if (!window || !this.permitted) return;
     if (this.listener) {
