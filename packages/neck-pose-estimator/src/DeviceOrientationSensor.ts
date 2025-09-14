@@ -39,6 +39,7 @@ export class DeviceOrientationSensor {
     } else {
       this.permitted = true;
     }
+
     if (this.permitted && startFlag) {
       this.start();
     } else if (!this.permitted) {
