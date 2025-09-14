@@ -6,16 +6,25 @@ export type CaptureResult = {
 };
 
 export class FaceCapture {
+  private readonly ID_PREFIX = "face-capture-";
+  private readonly ID_LENGTH = 8;
+  private readonly DEFAULT_WIDTH = 320;
+  private readonly DEFAULT_HEIGHT = 240;
+
   private video: HTMLVideoElement;
   private container: HTMLElement;
   private stream: MediaStream | null = null;
   private intervalId: number | null = null;
   private isIOS: boolean = false;
-
-  private readonly ID_PREFIX = "face-capture-";
-  private readonly ID_LENGTH = 8;
-  private readonly DEFAULT_WIDTH = 320;
-  private readonly DEFAULT_HEIGHT = 240;
+  private sizeConfig: {
+    width?: number;
+    height?: number;
+    aspectRatio?: number;
+  } = {
+    width: this.DEFAULT_WIDTH,
+    height: this.DEFAULT_HEIGHT,
+    aspectRatio: this.DEFAULT_WIDTH / this.DEFAULT_HEIGHT,
+  };
 
   constructor(
     private _container: HTMLElement | string | undefined,
@@ -47,21 +56,15 @@ export class FaceCapture {
     this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     this.width = width;
     this.height = height;
+    this.sizeConfig = this.getVideoSizeConfig();
     this.video = document.createElement("video");
-    const sizeConfig = this.getVideoSizeConfig();
     Object.assign(this.video, {
       id: `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`,
       muted: true,
       autoplay: true,
       playsInline: true,
-      ...sizeConfig,
+      ...this.sizeConfig,
     });
-    if (sizeConfig.width) {
-      this.video.style.width = `${sizeConfig.width}px`;
-    }
-    if (sizeConfig.height) {
-      this.video.style.height = `${sizeConfig.height}px`;
-    }
     this.video.style.objectFit = "cover";
     this.video.style.transform = "scaleX(-1)";
     if (this.options?.hideVideo) {
@@ -82,8 +85,8 @@ export class FaceCapture {
   getVideoSizeConfig() {
     return this.isIOS
       ? {
-          width: this.width ?? { ideal: this.DEFAULT_WIDTH },
-          height: this.height ?? { ideal: this.DEFAULT_HEIGHT },
+          width: this.width ?? this.DEFAULT_WIDTH,
+          height: this.height ?? this.DEFAULT_HEIGHT,
         }
       : {
           ...(this.width === null ? {} : { width: this.width }),
@@ -105,7 +108,7 @@ export class FaceCapture {
           // aspectRatio: {
           //   exact: this.height / this.width,
           // },
-          ...this.getVideoSizeConfig(),
+          ...this.sizeConfig,
         },
       });
       this.video.srcObject = this.stream;
