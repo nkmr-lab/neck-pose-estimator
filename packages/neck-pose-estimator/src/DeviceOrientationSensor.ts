@@ -24,38 +24,33 @@ export class DeviceOrientationSensor {
         navigator.userAgent.indexOf("Android") === -1 ? 0 : 90;
     }
 
-    return new Promise((resolve, reject) => {
-      if (iOS) {
-        requestPermission()
-          .then((res) => {
-            if (res === "granted") {
-              this.permitted = true;
-              if (startFlag) {
-                this.start();
-              }
-            } else {
-              reject(
-                new Error("Permission denied for device orientation access"),
-              );
-            }
-            resolve();
-          })
-          .catch((e) => {
-            this.permitted = false;
-            reject(e);
-          });
-      } else {
-        this.permitted = true;
-        if (startFlag) {
-          this.start();
+    if (iOS) {
+      const res = await requestPermission();
+      try {
+        if (res === "granted") {
+          this.permitted = true;
+        } else {
+          this.permitted = false;
+          throw new Error("Permission denied");
         }
-        resolve();
+      } catch (e) {
+        this.permitted = false;
       }
-    });
+    } else {
+      this.permitted = true;
+    }
+    if (this.permitted && startFlag) {
+      this.start();
+    } else if (!this.permitted) {
+      throw new Error("Orientation Sensor Permission denied");
+    }
   }
 
   public start() {
     if (!window || !this.permitted) return;
+    if (this.listener) {
+      this.stop();
+    }
 
     this.listener = (e: DeviceOrientationEvent) => {
       const alpha = e.alpha ? (e.alpha + this.osCorrection) % 360 : null;
