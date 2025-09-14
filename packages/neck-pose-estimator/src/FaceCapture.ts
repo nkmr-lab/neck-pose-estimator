@@ -10,6 +10,7 @@ export class FaceCapture {
   private container: HTMLElement;
   private stream: MediaStream | null = null;
   private intervalId: number | null = null;
+  private isIOS: boolean = false;
 
   private readonly ID_PREFIX = "face-capture-";
   private readonly ID_LENGTH = 8;
@@ -43,17 +44,24 @@ export class FaceCapture {
     } else {
       this.container = document.body; // デフォルトはbody要素
     }
+    this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     this.width = width;
     this.height = height;
     this.video = document.createElement("video");
-    this.video.id = `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`;
+    const sizeConfig = this.getVideoSizeConfig();
     Object.assign(this.video, {
+      id: `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`,
       muted: true,
       autoplay: true,
       playsInline: true,
-      width: width ?? this.DEFAULT_WIDTH,
-      height: height ?? this.DEFAULT_HEIGHT,
+      ...sizeConfig,
     });
+    if (sizeConfig.width) {
+      this.video.style.width = `${sizeConfig.width}px`;
+    }
+    if (sizeConfig.height) {
+      this.video.style.height = `${sizeConfig.height}px`;
+    }
     this.video.style.objectFit = "cover";
     this.video.style.transform = "scaleX(-1)";
     if (this.options?.hideVideo) {
@@ -72,8 +80,7 @@ export class FaceCapture {
   }
 
   getVideoSizeConfig() {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    return isIOS
+    return this.isIOS
       ? {
           width: this.width ?? { ideal: this.DEFAULT_WIDTH },
           height: this.height ?? { ideal: this.DEFAULT_HEIGHT },
