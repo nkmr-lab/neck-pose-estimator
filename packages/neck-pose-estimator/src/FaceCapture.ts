@@ -46,15 +46,13 @@ export class FaceCapture {
     this.width = width;
     this.height = height;
     this.video = document.createElement("video");
-    this.video.width = width ?? this.DEFAULT_WIDTH;
-    this.video.height = height ?? this.DEFAULT_HEIGHT;
     this.video.id = `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`;
     Object.assign(this.video, {
       muted: true,
       autoplay: true,
       playsInline: true,
-      width,
-      height,
+      width: width ?? this.DEFAULT_WIDTH,
+      height: height ?? this.DEFAULT_HEIGHT,
     });
     this.video.style.objectFit = "cover";
     this.video.style.transform = "scaleX(-1)";
