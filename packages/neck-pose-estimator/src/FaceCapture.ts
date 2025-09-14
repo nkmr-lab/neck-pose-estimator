@@ -44,6 +44,8 @@ export class FaceCapture {
     this.width = width;
     this.height = height;
     this.video = document.createElement("video");
+    this.video.width = this.width ?? 0;
+    this.video.height = this.height ?? 0;
     this.video.id = `${this.ID_PREFIX}-${generateRandomId(this.ID_LENGTH)}`;
     Object.assign(this.video, {
       muted: true,
@@ -69,6 +71,22 @@ export class FaceCapture {
     container.appendChild(this.video);
   }
 
+  getVideoSizeConfig() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    return isIOS
+      ? {
+          width: this.width ?? { ideal: document.body.clientWidth },
+          height: this.height ?? { ideal: document.body.clientHeight },
+        }
+      : {
+          ...(this.width === null ? {} : { width: this.width }),
+          ...(this.height === null ? {} : { height: this.height }),
+          ...(this.width === null || this.height === null
+            ? {}
+            : { aspectRatio: this.width / this.height }),
+        };
+  }
+
   async start(): Promise<boolean> {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
@@ -80,11 +98,7 @@ export class FaceCapture {
           // aspectRatio: {
           //   exact: this.height / this.width,
           // },
-          ...(this.width === null ? {} : { width: this.width }),
-          ...(this.height === null ? {} : { height: this.height }),
-          ...(this.width === null || this.height === null
-            ? {}
-            : { aspectRatio: this.width / this.height }),
+          ...this.getVideoSizeConfig(),
         },
       });
       this.video.srcObject = this.stream;
