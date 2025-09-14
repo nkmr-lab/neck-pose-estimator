@@ -75,8 +75,8 @@ export class FaceCapture {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     return isIOS
       ? {
-          width: this.width ?? { ideal: document.body.clientWidth },
-          height: this.height ?? { ideal: document.body.clientHeight },
+          width: this.width ?? { ideal: this.DEFAULT_WIDTH },
+          height: this.height ?? { ideal: this.DEFAULT_HEIGHT },
         }
       : {
           ...(this.width === null ? {} : { width: this.width }),
