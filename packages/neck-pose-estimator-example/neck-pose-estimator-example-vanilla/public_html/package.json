@@ -1,0 +1,12 @@
+{
+  "name": "@nkmr-lab/neck-pose-estimator-example-vanilla",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build-package": "vite build"
+  },
+  "dependencies": {
+    "@nkmr-lab/neck-pose-estimator": "workspace:*",
+    "vite": "^7.1.3"
+  }
+}
