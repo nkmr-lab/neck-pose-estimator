@@ -74,3 +74,17 @@ pnpm -F @nkmr-lab/neck-pose-estimator test
 ```bash
 pnpm -F @nkmr-lab/neck-pose-estimator openapi
 ```
+
+# 引用
+
+このライブラリを用いて論文を発表する場合は、以下のように引用してください。
+
+```bibtex
+@proceedings{64687.3764720,
+  booktitle = {OzCHI '25: The 2025 ACM SIGCHI Conference on Human Computer Interaction},
+  title = {Can We Prevent "Text Neck" Using Only a Smartphone? Real-Time Neck Angle Estimation and a Serious Game as a Case Study},
+  author = {Kento, Watanabe and Satoshi, Nakamura},
+  year = {2025},
+  doi = {https://doi.org/10.1145/3764687.3764720}
+}
+```

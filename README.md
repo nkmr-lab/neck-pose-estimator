@@ -74,3 +74,17 @@ You can fetch the latest schema by running the following command (you need to se
 ```bash
 pnpm -F @nkmr-lab/neck-pose-estimator openapi
 ```
+
+# Citing
+
+If you find our work useful, please cite it as follows:
+
+```bibtex
+@proceedings{64687.3764720,
+  booktitle = {OzCHI '25: The 2025 ACM SIGCHI Conference on Human Computer Interaction},
+  title = {Can We Prevent "Text Neck" Using Only a Smartphone? Real-Time Neck Angle Estimation and a Serious Game as a Case Study},
+  author = {Kento, Watanabe and Satoshi, Nakamura},
+  year = {2025},
+  doi = {https://doi.org/10.1145/3764687.3764720}
+}
+```
