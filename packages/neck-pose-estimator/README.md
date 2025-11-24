@@ -1,40 +1,28 @@
-# 首の角度推定ライブラリ (neck-pose-estimator)
+# Neck Angle Estimator (neck-pose-estimator)
 
-このライブラリは、ユーザーの顔画像をキャプチャし、デバイスの傾きデータを収集することで、ユーザーの首の姿勢を推定する`NeckAngleEstimator`クラスを提供します。収集したデータは分析のためにバックエンドサービスに送信され、推定された姿勢角度を返します。
+This library provides the `NeckAngleEstimator` class, which estimates the user's neck pose by capturing the user's face image and collecting device tilt data. The collected data is sent to a backend service for analysis, returning the estimated pose angle.
 
-## 主な機能
+## Key Features
 
-- ユーザーのカメラから映像をキャプチャ
-- デバイスの傾きセンサーデータへのアクセス
-- 姿勢推定プロセスを開始・停止するためのシンプルなAPI
-- ユーザー認証と姿勢のキャリブレーション処理
-- 推定成功時およびエラー発生時のイベント通知
+- Capture video from the user's camera
+- Access device tilt sensor data
+- Simple API to start/stop the pose estimation process
+- User authentication and pose calibration processing
+- Event notification on successful estimation and error occurrence
 
-## 注意事項
+## Notes
 
-- このライブラリはWebカメラとデバイスのセンサを利用するため，HTTPS環境でしか動作しません。
-  - 開発時は`mkcert`などで自己証明書を作成し、HTTPSサーバーを立てることを推奨します。
-  - また，デバイスのセンサを利用する際はクリックなどユーザの明確なアクションが必要なため，`NeckAngleEstimator`の`sensor.requestPermission()`メソッドを直接呼び出す必要があります。
-- このライブラリの利用には`App-ID`が必要です．
-  - `App-ID`は姿勢推定APIのアプリ申請フォームから登録し，取得できます。
-  - その際，`App-ID`は1度しか発行されないため，慎重に管理してください。
-- このライブラリは[姿勢推定APIのバックエンド](https://github.com/kntWT/posture-correction-backend)に依存しています。
-  - api schemaのバージョンずれなどがあった場合は管理者に連絡してください。
-- このライブラリはインスタンス作成時に`document`や`window`オブジェクトにアクセスするため、サーバーサイドレンダリング（SSR）環境では動作しません。クライアントサイドでのみ使用してください。
+- This library uses a webcam and device sensors, so it only works in an HTTPS environment.
+  - It is recommended to create a self-signed certificate using `mkcert` or similar and set up an HTTPS server during development.
+  - Also, since using device sensors requires a clear user action such as a click, you need to call the `NeckAngleEstimator`'s `sensor.requestPermission()` method directly.
+- An `App-ID` is required to use this library.
+  - You can register and obtain an `App-ID` from the pose estimation API application form.
+  - Please manage the `App-ID` carefully as it is issued only once.
+- This library depends on the [Pose Estimation API Backend](https://github.com/kntWT/posture-correction-backend).
+  - Please contact the administrator if there is a version mismatch in the api schema.
+- This library accesses `document` and `window` objects upon instantiation, so it does not work in a Server-Side Rendering (SSR) environment. Please use it only on the client side.
 
-## インストール
-
-このライブラリは`@nkmr-lab`のプライベートなnpmパッケージとして提供されています。そのため，`@nkmr-lab`にアクセス権限があるGitHubアカウントの[Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)を使用して、npmの認証を行う必要があります。
-classicなtokenで、`read:packages`のスコープを持つトークンを作成してください。
-pnpmを用いたモノレポの場合はプロジェクトルート，そうでない場合はライブラリを利用するフロントエンドアプリケーションのルートディレクトリに`.npmrc`ファイルを作成し、以下の内容を追加します。
-
-```plaintext
-@nkmr-lab:registry=https://npm.pkg.github.com/
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-ここで、`${GITHUB_TOKEN}`はあなたのGitHub Personal Access Tokenに置き換えるか，自身の環境変数にセットしてください。
-**直接書き換える場合はGitHubにpushしないように注意してください**
+## Installation
 
 ```bash
 npm install @nkmr-lab/neck-pose-estimator
@@ -44,66 +32,66 @@ yarn add  @nkmr-lab/neck-pose-estimator
 pnpm add  @nkmr-lab/neck-pose-estimator
 ```
 
-## 基本的な使い方
+## Basic Usage
 
-`NeckAngleEstimator`の基本的な使用例です。
+Basic usage example of `NeckAngleEstimator`.
 
-### ESMなどを使う場合
+### Using with ESM, etc.
 
-`NeckAngleEstimator`をESMモジュールとしてインポートし、使用することができます。
+You can import and use `NeckAngleEstimator` as an ESM module.
 
 ```javascript:main.js
 import { NeckAngleEstimator } from "@nkmr-lab/neck-pose-estimator";
 
-// 映像を表示するコンテナ要素を取得
+// Get the container element to display the video
 const videoContainer = document.getElementById("video-container");
 
-// Estimatorをインスタンス化
+// Instantiate the Estimator
 const estimator = new NeckAngleEstimator({
-  apiBaseUrl: "https://your-api-domain.com/path/to/api", // APIのベースURL，CORSを考慮するとプロキシする必要がある
-  appId: "your-app-id", // アプリケーションID
-  container: videoContainer, // (任意) 映像を追記する要素。デフォルトは document.body
-  loginOnStart: true, // (任意) start()時にログインを要求するか。デフォルトは false
+  apiBaseUrl: "https://your-api-domain.com/path/to/api", // API base URL, need to proxy considering CORS
+  appId: "your-app-id", // Application ID
+  container: videoContainer, // (Optional) Element to append video. Default is document.body
+  loginOnStart: true, // (Optional) Whether to require login on start(). Default is false
 });
 
 /**
- * イベントリスナーを設定
- * @param {object} result - 推定結果
- *   @param {number} result.neckAngle - 推定された首の角度（度単位）
+ * Set event listener
+ * @param {object} result - Estimation result
+ *   @param {number} result.neckAngle - Estimated neck angle (in degrees)
  */
 estimator.onEstimate((result) => {
   if (result.neckAngle === null) {
-    // キャリブレーションのた中は首の角度が推定されない
-    console.log("キャリブレーション中です");
+    // Neck angle is not estimated during calibration
+    console.log("Calibrating");
   } else {
-    console.log("推定された首の角度:", result.neckAngle);
+    console.log("Estimated neck angle:", result.neckAngle);
   }
 });
 
 /**
- * エラーリスナーを設定
- * @param {Error} error - 発生したエラー
+ * Set error listener
+ * @param {Error} error - Occurred error
  */
 estimator.onError((error) => {
-  console.error("推定エラー:", error);
+  console.error("Estimation error:", error);
 });
 
-// 推定プロセスを開始
+// Start estimation process
 async function startEstimation() {
   try {
-    await estimator.sensor.requestPermission(); // センサーのパーミッションを要求
+    await estimator.sensor.requestPermission(); // Request sensor permission
     await estimator.start();
-    console.log("推定を開始しました。");
+    console.log("Estimation started.");
   } catch (error) {
-    console.error("推定の開始に失敗しました:", error);
-    // カメラやセンサーのパーミッションが拒否された場合などのエラーを処理
+    console.error("Failed to start estimation:", error);
+    // Handle errors such as camera or sensor permission denied
   }
 }
 document
   .getElementById("start-button")
   .addEventListener("click", startEstimation);
 
-// 推定を停止する場合
+// To stop estimation
 function stopEstimation() {
   estimator.stop();
 }
@@ -112,14 +100,14 @@ document
   .addEventListener("click", stopEstimation);
 ```
 
-### 素のJavaScriptで使う場合
+### Using with vanilla JavaScript
 
-素のjsでnpm packageを使う場合はバンドルツールを使ってビルドする必要があります。
-以下は、Viteを使用してビルドする例です。
+If you use the npm package with vanilla js, you need to build it using a bundle tool.
+Here is an example of building using Vite.
 
 ```javascript:__index.js
 import { NeckAngleEstimator } from "@nkmr-lab/neck-pose-estimator";
-window.NeckAngleEstimator = NeckAngleEstimator; // グローバルに登録する場合
+window.NeckAngleEstimator = NeckAngleEstimator; // To register globally
 ```
 
 ```javascript:vite.config.js
@@ -143,107 +131,107 @@ export default defineConfig({
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neck Angle Estimator Example</title>
-  <!-- ビルドされたjsファイルを読み込む -->
+  <!-- Load built js file -->
   <script defer src="/dist/neck-pose-estimator.umd.js"></script>
   <script defer src="./main.js"></script>
 </head>
 <body>
   <h1>Neck Angle Estimator Example</h1>
   <div id="video-container"></div>
-  <p>カメラの映像が表示されます。</p>
-  <button id="start-button">推定を開始</button>
-  <button id="stop-button">推定を停止</button>
+  <p>Video feed will be displayed.</p>
+  <button id="start-button">Start Estimation</button>
+  <button id="stop-button">Stop Estimation</button>
 </body>
 </html>
 ```
 
 ```javascript:main.js
-// 映像を表示するコンテナ要素を取得
+// Get the container element to display the video
 const videoContainer = document.getElementById("video-container");
 
-// Estimatorをインスタンス化
+// Instantiate the Estimator
 const estimator = new NeckAngleEstimator({
-  apiBaseUrl: "https://your-api.example.com", // APIのベースURL
-  appId: "your-app-id", // アプリケーションID
-  container: videoContainer, // (任意) 映像を追記する要素。デフォルトは document.body
-  loginOnStart: true, // (任意) start()時にログインを要求するか。デフォルトは false
+  apiBaseUrl: "https://your-api.example.com", // API base URL
+  appId: "your-app-id", // Application ID
+  container: videoContainer, // (Optional) Element to append video. Default is document.body
+  loginOnStart: true, // (Optional) Whether to require login on start(). Default is false
 });
 
 /**
- * イベントリスナーを設定
- * @param {object} result - 推定結果，型定義上はnullを許容しているが推定結果は常に存在する
- *   @param {number} result.id - 推定結果のID
- *   @param {number} result.userId - ユーザーID
- *   @param {string | null} result.fileName - キャプチャされた画像のファイル名
- *   @param {number | null} result.neckAngle - 推定された首の角度（度単位）
- *   @param {number | null} result.sensorAlpha - デバイスの傾きセンサーのアルファ値
- *   @param {number | null} result.sensorBeta - デバイスの傾きセンサーのベータ値
- *   @param {number | null} result.sensorGamma - デバイスの傾きセンサーのガンマ値
- *   @param {number | null} result.facePitch - 顔のピッチ角度（度単位）
- *   @param {number | null} result.faceYaw - 顔のヨー角度（度単位）
- *   @param {number | null} result.faceRoll - 顔のロール角度（度単位）
- *   @param {number | null} result.noseX - 鼻のX座標
- *   @param {number | null} result.noseY - 鼻のY座標
- *   @param {number | null} result.neckX - 首のX座標
- *   @param {number | null} result.neckY - 首のY座標
- *   @param {number | null} result.leftEyeX - 左目のX座標
- *   @param {number | null} result.leftEyeY - 左目のY座標
- *   @param {number | null} result.rightEyeX - 右目のX座標
- *   @param {number | null} result.rightEyeY - 右目のY座標
- *   @param {number | null} result.imageWidth - キャプチャされた画像の幅
- *   @param {number | null} result.imageHeight - キャプチャされた画像の高さ
- *   @param {number | null} result.neckToNose - 首から鼻までの距離（ピクセル単位）
- *   @param {number | null} result.standardDistance - 標準距離（ピクセル単位）
- *   @param {string | null} result.createdAt - 推定結果の作成日時（ISO 8601形式）
- *   @param {string} result.updatedAt - 推定結果の更新日時（ISO 8601形式）
- *   @param {string} result.appId - アプリケーションID
+ * Set event listener
+ * @param {object} result - Estimation result, although null is allowed in type definition, estimation result always exists
+ *   @param {number} result.id - Estimation result ID
+ *   @param {number} result.userId - User ID
+ *   @param {string | null} result.fileName - Captured image file name
+ *   @param {number | null} result.neckAngle - Estimated neck angle (in degrees)
+ *   @param {number | null} result.sensorAlpha - Device tilt sensor alpha value
+ *   @param {number | null} result.sensorBeta - Device tilt sensor beta value
+ *   @param {number | null} result.sensorGamma - Device tilt sensor gamma value
+ *   @param {number | null} result.facePitch - Face pitch angle (in degrees)
+ *   @param {number | null} result.faceYaw - Face yaw angle (in degrees)
+ *   @param {number | null} result.faceRoll - Face roll angle (in degrees)
+ *   @param {number | null} result.noseX - Nose X coordinate
+ *   @param {number | null} result.noseY - Nose Y coordinate
+ *   @param {number | null} result.neckX - Neck X coordinate
+ *   @param {number | null} result.neckY - Neck Y coordinate
+ *   @param {number | null} result.leftEyeX - Left eye X coordinate
+ *   @param {number | null} result.leftEyeY - Left eye Y coordinate
+ *   @param {number | null} result.rightEyeX - Right eye X coordinate
+ *   @param {number | null} result.rightEyeY - Right eye Y coordinate
+ *   @param {number | null} result.imageWidth - Captured image width
+ *   @param {number | null} result.imageHeight - Captured image height
+ *   @param {number | null} result.neckToNose - Distance from neck to nose (in pixels)
+ *   @param {number | null} result.standardDistance - Standard distance (in pixels)
+ *   @param {string | null} result.createdAt - Estimation result creation date (ISO 8601 format)
+ *   @param {string} result.updatedAt - Estimation result update date (ISO 8601 format)
+ *   @param {string} result.appId - Application ID
  * @returns {void}
  */
 estimator.onEstimate((result) => {
   if (result.neckAngle === null) {
-    // キャリブレーションのた中は首の角度が推定されない
-    console.log("キャリブレーション中です");
+    // Neck angle is not estimated during calibration
+    console.log("Calibrating");
   } else {
     if (result.neckAngle > 60) {
-      console.warn("首の角度が大きすぎます:", result.neckAngle);
+      console.warn("Neck angle is too large:", result.neckAngle);
     } else if (result.neckAngle > 30) {
-      console.warn("首の角度が少し大きいです:", result.neckAngle);
+      console.warn("Neck angle is slightly large:", result.neckAngle);
     } else if (result.neckAngle > 15) {
-      console.log("首の角度は正常です:", result.neckAngle);
+      console.log("Neck angle is normal:", result.neckAngle);
     } else {
-      console.log("首の角度がとても良いです:", result.neckAngle);
+      console.log("Neck angle is very good:", result.neckAngle);
     }
   }
 });
 
 /**
- * エラーリスナーを設定
- * @param {Error | ApiError} error - 発生したエラー
+ * Set error listener
+ * @param {Error | ApiError} error - Occurred error
  */
 estimator.onError((error) => {
   if (data in error) {
-    console.error("APIエラー:", error.data);
+    console.error("API Error:", error.data);
   } else {
-    console.error("推定エラー:", error);
+    console.error("Estimation Error:", error);
   }
 });
 
-// 推定プロセスを開始，ボタンのクリック時に発火
+// Start estimation process, fired on button click
 async function startEstimation() {
   try {
-    await estimator.sensor.requestPermission(); // センサーのパーミッションを要求
+    await estimator.sensor.requestPermission(); // Request sensor permission
     await estimator.start();
-    console.log("推定を開始しました。");
+    console.log("Estimation started.");
   } catch (error) {
-    console.error("推定の開始に失敗しました:", error);
-    // カメラやセンサーのパーミッションが拒否された場合などのエラーを処理
+    console.error("Failed to start estimation:", error);
+    // Handle errors such as camera or sensor permission denied
   }
 }
 document
   .getElementById("start-button")
   .addEventListener("click", startEstimation);
 
-// 推定を停止する場合
+// To stop estimation
 function stopEstimation() {
   estimator.stop();
 }
@@ -253,41 +241,41 @@ document
 
 ```
 
-## APIリファレンス
+## API Reference
 
 ### `new NeckAngleEstimator(options)`
 
-新しい`NeckAngleEstimator`インスタンスを作成します。
+Creates a new `NeckAngleEstimator` instance.
 
-**オプション:**
+**Options:**
 
-- `apiBaseUrl` (string, 必須): 姿勢推定APIのベースURL。
-- `appId` (string, 必須): API用のアプリケーションID。
-- `container` (HTMLElement | string, 任意): 映像フィードを追記するHTML要素またはそのID。デフォルトは`document.body`。
-- `width` (number, 任意): video要素の幅。デフォルトは`null`（自動）。
-- `height` (number, 任意): video要素の高さ。デフォルトは`null`（自動）。
-- `interval` (number, 任意): データキャプチャの間隔（ミリ秒）。デフォルトは`500`。
-- `calibrationThreshold` (number, 任意): 姿勢のキャリブレーションに使用される閾値（**キャリブレーションはデバイスの角度，デバイスに対するユーザの顔の角度が全てこの閾値以下の場合に発火します**）。デフォルトは`5`。
-- `enforceCalibration` (boolean, 任意): `true`の場合、キャリブレーションが完了するまで推定を開始しません。キャリブレーションを行わない場合は、バックエンドが指定したおよその値を使って推定を行います。デフォルトは`false`。
-- `hideVideo` (boolean, 任意): `true`の場合、映像フィードを非表示にします。デフォルトは`false`。
-- `loginOnInit` (boolean, 任意): `true`の場合、インスタンス化時にユーザーにログインを促します。デフォルトは`false`。
-- `loginOnStart` (boolean, 任意): `true`の場合、`start()`呼び出し時にユーザーにログインを促します。デフォルトは`false`。
-- `loginCallback` (function, 任意): ログイン成功時に呼び出されるコールバック関数。デフォルトは`null`。
-- `loginConfig` (object, 任意): ログイン方法の設定。
-  - `basic` (boolean，任意): ベーシック認証を使用するかどうか。デフォルトは`true`。
-  - `google` (boolean | object，任意): Google認証を使用するかどうか。デフォルトは`false`。
-    - `redirectPath` (string, 任意): Google認証後のリダイレクトパス。デフォルトは`/`。
-    - **バックエンドのデプロイ先の関係でクロスオリジンへのCookie書き込みとなり動かない可能性があります**
-    - **リダイレクト後許可されていないドメインというエラーが出た場合は管理者にご連絡ください**
-    - **googleログインの場合はuser情報を返すのではなくcookie書き込みのみを行なってリダイレクトされる点に注意（ページレンダリング時に`/user/login`のリクエストを送ることを推奨します）**
+- `apiBaseUrl` (string, required): Base URL of the pose estimation API.
+- `appId` (string, required): Application ID for the API.
+- `container` (HTMLElement | string, optional): HTML element or its ID to append the video feed. Default is `document.body`.
+- `width` (number, optional): Width of the video element. Default is `null` (auto).
+- `height` (number, optional): Height of the video element. Default is `null` (auto).
+- `interval` (number, optional): Data capture interval (milliseconds). Default is `500`.
+- `calibrationThreshold` (number, optional): Threshold used for pose calibration (**Calibration fires when the device angle and the user's face angle relative to the device are all below this threshold**). Default is `5`.
+- `enforceCalibration` (boolean, optional): If `true`, estimation does not start until calibration is complete. If calibration is not performed, estimation is performed using approximate values specified by the backend. Default is `false`.
+- `hideVideo` (boolean, optional): If `true`, hides the video feed. Default is `false`.
+- `loginOnInit` (boolean, optional): If `true`, prompts the user to login upon instantiation. Default is `false`.
+- `loginOnStart` (boolean, optional): If `true`, prompts the user to login when `start()` is called. Default is `false`.
+- `loginCallback` (function, optional): Callback function called upon successful login. Default is `null`.
+- `loginConfig` (object, optional): Login method configuration.
+  - `basic` (boolean, optional): Whether to use Basic authentication. Default is `true`.
+  - `google` (boolean | object, optional): Whether to use Google authentication. Default is `false`.
+    - `redirectPath` (string, optional): Redirect path after Google authentication. Default is `/`.
+    - **May not work due to cross-origin cookie writing depending on the backend deployment destination**
+    - **Please contact the administrator if you get an error saying the domain is not allowed after redirection**
+    - **Note that in the case of Google login, it redirects only by writing a cookie instead of returning user information (It is recommended to send a `/user/login` request when rendering the page)**
 
-### メソッド
+### Methods
 
-- `async start(): Promise<void>`: 必要なパーミッション（カメラとデバイス傾き）を要求し、推定プロセスを開始します。
-- `stop(): void`: カメラフィード、センサーリスナー、および推定インターバルを停止します。
-- `onEstimate(callback: (result: EstimateResult) => void): void`: 推定結果と共に呼び出されるコールバック関数を登録します。
-- `onError(callback: (error: Error) => void): void`: エラー発生時に呼び出されるコールバック関数を登録します。
-- `isLoggedIn(): boolean`: ユーザーが現在ログインしている場合は`true`を返します。
-- `hadCalibrated(): boolean`: ユーザーが基準姿勢をキャリブレーション済みの場合は`true`を返します。
-- `sensor.requestPermission(): Promise<void>`: デバイスの傾きセンサーへのアクセス許可を要求します。**ユーザーの明示的なアクションがあった場合に直接呼び出してください。**
-- `getUserInfo(): Promise<UserInfo | null>`: 現在のユーザー情報を取得します（`password`や`token`は除く）。ログインしていない場合は`null`を返します。
+- `async start(): Promise<void>`: Requests necessary permissions (camera and device tilt) and starts the estimation process.
+- `stop(): void`: Stops the camera feed, sensor listeners, and estimation interval.
+- `onEstimate(callback: (result: EstimateResult) => void): void`: Registers a callback function called with the estimation result.
+- `onError(callback: (error: Error) => void): void`: Registers a callback function called when an error occurs.
+- `isLoggedIn(): boolean`: Returns `true` if the user is currently logged in.
+- `hadCalibrated(): boolean`: Returns `true` if the user has calibrated the reference pose.
+- `sensor.requestPermission(): Promise<void>`: Requests access permission to the device tilt sensor. **Call directly when there is an explicit user action.**
+- `getUserInfo(): Promise<UserInfo | null>`: Gets the current user information (excluding `password` and `token`). Returns `null` if not logged in.
