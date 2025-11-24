@@ -1,54 +1,55 @@
-# 首姿勢推定ライブラリ - サンプル (neck-pose-estimator - Examples)
+# Neck Pose Estimator - Examples
 
-このディレクトリには、`neck-pose-estimator`ライブラリの使用方法を示すサンプルアプリケーションが含まれています。
+This directory contains sample applications demonstrating how to use the `neck-pose-estimator` library.
 
-## 含まれるサンプル
+## Included Samples
 
-- **`neck-pose-estimator-example-react`**: React と Vite で構築されたサンプルアプリケーションです。ライブラリを統合し、ビデオフィードと推定結果を表示する基本的な方法を示します。
+- **`neck-pose-estimator-example-react`**: A sample application built with React and Vite. It demonstrates the basic way to integrate the library and display the video feed and estimation results.
+- **`neck-pose-estimator-example-vanilla`**: A sample application built with vanilla JavaScript. It demonstrates the basic way to integrate the library and display the video feed and estimation results.
 
-## サンプルの実行方法
+## How to Run the React Samples
 
-まずは環境変数をセットします。
-`.env.local`ファイルを作成し、以下の内容を追加します。
+First, set up the environment variables.
+Create a `.env.local` file and add the following content:
 
 ```env
 VITE_API_BASE_URL=https://your-api.example.com
 VITE_APP_ID=your-app-id
 ```
 
-`VITE_API_BASE_URL`には、姿勢推定 API のベース URL を設定します。`VITE_APP_ID`には、アプリケーション ID を設定します。
+Set `VITE_API_BASE_URL` to the base URL of the pose estimation API. Set `VITE_APP_ID` to your application ID.
 
-**注意:** このアプリケーションがカメラとデバイスの傾きセンサーにアクセスするには、**HTTPS**コンテキストが必要です。Vite 開発サーバーは、自己署名証明書を提供することで HTTPS で実行するように設定できます。
+**Note:** This application requires an **HTTPS** context to access the camera and device orientation sensors. The Vite development server can be configured to run over HTTPS by providing self-signed certificates.
 
-自己証明書を作成するには、まず`mkcert`をインストールしてください。
-macOS では Homebrew を使用してインストールできます。
+To create self-signed certificates, first install `mkcert`.
+On macOS, you can install it using Homebrew:
 
 ```bash
 brew install mkcert
 ```
 
-windows では winget を使用してインストールできます。
+On Windows, you can install it using winget:
 
 ```powershell
 winget install mkcert
 ```
 
-次に、自己認証局，ルート証明書などを生成します。
+Next, generate the local certificate authority and root certificate:
 
 ```bash
 mkcert --install
 mkcert -CAROOT
 ```
 
-次に，localhost に対して自己署名証明書を生成します。
+Then, generate a self-signed certificate for localhost:
 
 ```bash
 mkcert localhost
 ```
 
-このコマンドにより、`localhost.pem`と`localhost-key.pem`という 2 つのファイルが生成されます。
-これらのファイルを[certs](./certs)ディレクトリに移動します。
-`vite.config.ts`の`server.https`オプションでこれらのファイルを参照することで，HTTPS での開発サーバーを起動できます。
+This command will generate two files: `localhost.pem` and `localhost-key.pem`.
+Move these files to the [certs](./certs) directory.
+You can reference these files in the `server.https` option in `vite.config.ts` to start the development server over HTTPS.
 
 ```typescript
 import { defineConfig } from "vite";
@@ -67,7 +68,7 @@ export default defineConfig({
 });
 ```
 
-サンプルを実行するには、モノレポのルートディレクトリに移動し、次のコマンドを実行します。
+To run the samples, navigate to the monorepo root directory and execute the following command:
 
 ```bash
 pnpm -F neck-pose-estimator-example-react dev

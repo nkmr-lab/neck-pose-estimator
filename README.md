@@ -1,74 +1,75 @@
 # Neck Pose Estimator
 
-このリポジトリは、`pnpm`ワークスペースで管理されている、首の姿勢推定ライブラリとそのサンプルアプリケーションのモノレポです。
+This repository is a monorepo for the Neck Pose Estimator library and its sample applications, managed with `pnpm` workspaces.
 
-このプロジェクトは、カメラとデバイスのセンサーを使用して首の姿勢を推定するコアライブラリ（TypeScript 製）と、その使用法を示す React ベースのサンプルアプリケーションで構成されています。
+This project consists of a core library (written in TypeScript) that estimates neck pose using camera and device sensors, and a React-based and vanilla JavaScript sample applications demonstrating its usage.
 
-## ワークスペース構成
+## Workspace Structure
 
-- `packages/neck-pose-estimator`: コアライブラリ。@nkmr-labのprivate GitHub Packagesとして公開しています。バックエンド API に接続し、首の角度を推定する`NeckAngleEstimator`クラスを提供します。
-  - ライブラリの使い方や詳細は [README](packages/neck-pose-estimator/README.md) を参照してください。
-- `packages/neck-pose-estimator-example`: `neck-pose-estimator`ライブラリを使用したサンプルアプリケーションが含まれています。
-  - `neck-pose-estimator-example-react`: Vite で構築された React アプリケーションです。
+- `packages/neck-pose-estimator`: The core library. Published as a private GitHub Package under @nkmr-lab. It provides the `NeckAngleEstimator` class which connects to a backend API to estimate neck angles.
+  - See the [README](packages/neck-pose-estimator/README.md) for usage and details.
+- `packages/neck-pose-estimator-example`: Contains sample applications using the `neck-pose-estimator` library.
+  - `neck-pose-estimator-example-react`: A React application built with Vite.
+  - `neck-pose-estimator-example-vanilla`: A vanilla JavaScript application.
 
-## 技術スタック
+## Tech Stack
 
-- **pnpm Workspaces**: モノレポの管理
-- **TypeScript**: プロジェクト全体での型安全性
-- **React**: サンプルアプリケーションの UI
-- **Vite**: サンプルアプリケーションの高速な開発体験
-- **Vitest**: コアライブラリの単体テストおよび結合テスト
+- **pnpm Workspaces**: Monorepo management
+- **TypeScript**: Type safety across the project
+- **React**: UI for the sample application
+- **Vite**: Fast development experience for the sample application
+- **Vitest**: Unit and integration testing for the core library
 
-## 開発の始め方
+## Getting Started
 
-### 前提条件
+### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 以降)
+- [Node.js](https://nodejs.org/) (v18 or later)
 - [pnpm](https://pnpm.io/)
 
-### セットアップ
+### Setup
 
-リポジトリをクローンし、ルートディレクトリから依存関係をインストールします。
+Clone the repository and install dependencies from the root directory.
 
 ```bash
-# リポジトリをクローン
+# Clone the repository
 git clone <repository-url>
 cd neck-pose-estimator
 
-# すべてのパッケージの依存関係をインストール
+# Install dependencies for all packages
 pnpm install
 ```
 
-### ビルド
+### Build
 
-ワークスペース内のすべてのパッケージをビルドするには、ルートディレクトリから次のコマンドを実行します。
+To build all packages in the workspace, run the following command from the root directory:
 
 ```bash
 pnpm -r build
 ```
 
-### サンプルアプリケーションの実行
+### Running the Sample Application
 
-React サンプルアプリケーションを開発モードで実行するには、次のコマンドを使用します。
+To run the React sample application in development mode, use the following command:
 
 ```bash
 pnpm -F @nkmr-lab/neck-pose-estimator-example-react dev
 ```
 
-これにより Vite 開発サーバーが起動します。アプリケーションがカメラとデバイスセンサーにアクセスするには、HTTPS コンテキストが必要であることに注意してください。また、環境変数や自己証明書など詳細なセットアップは、`neck-pose-estimator-example`の [README](packages/neck-pose-estimator-example/README.md) を参照してください。
+This starts the Vite development server. Note that the application requires an HTTPS context to access the camera and device sensors. For detailed setup including environment variables and self-signed certificates, please refer to the `neck-pose-estimator-example` [README](packages/neck-pose-estimator-example/README.md).
 
-### テストの実行
+### Running Tests
 
-コアライブラリのテストスイートを実行するには、次のコマンドを使用します。
+To run the test suite for the core library, use the following command:
 
 ```bash
 pnpm -F @nkmr-lab/neck-pose-estimator test
 ```
 
-### バックエンドの API スキーマの更新
+### Updating Backend API Schema
 
-バックエンドの API スキーマが更新された場合、`packages/neck-pose-estimator/src/types/api-schema.ts`を更新する必要があります。
-以下のコマンドを実行して、最新のスキーマを取得できます。（`.env`ファイルにバックエンドの OpenAPI スキーマを配信している URL を設定する必要があります）
+If the backend API schema is updated, `packages/neck-pose-estimator/src/types/api-schema.ts` needs to be updated.
+You can fetch the latest schema by running the following command (you need to set the URL serving the backend OpenAPI schema in the `.env` file):
 
 ```bash
 pnpm -F @nkmr-lab/neck-pose-estimator openapi
