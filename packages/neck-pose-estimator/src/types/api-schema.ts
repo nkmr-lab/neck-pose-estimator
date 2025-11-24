@@ -382,8 +382,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Estimate Posture */
-    post: operations["estimate_posture_posture_estimate_guest_post"];
+    /** Estimate Guest Posture */
+    post: operations["estimate_guest_posture_posture_estimate_guest_post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -625,8 +625,8 @@ export interface components {
       /** Sensors */
       sensors: string;
     };
-    /** Body_estimate_posture_posture_estimate_guest_post */
-    Body_estimate_posture_posture_estimate_guest_post: {
+    /** Body_estimate_guest_posture_posture_estimate_guest_post */
+    Body_estimate_guest_posture_posture_estimate_guest_post: {
       /**
        * File
        * Format: binary
@@ -1940,7 +1940,7 @@ export interface operations {
       };
     };
   };
-  estimate_posture_posture_estimate_guest_post: {
+  estimate_guest_posture_posture_estimate_guest_post: {
     parameters: {
       query?: never;
       header?: {
@@ -1951,7 +1951,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "multipart/form-data": components["schemas"]["Body_estimate_posture_posture_estimate_guest_post"];
+        "multipart/form-data": components["schemas"]["Body_estimate_guest_posture_posture_estimate_guest_post"];
       };
     };
     responses: {
