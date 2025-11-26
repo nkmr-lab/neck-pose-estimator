@@ -24,6 +24,15 @@ This library provides the `NeckAngleEstimator` class, which estimates the user's
 
 ## Installation
 
+make `.npmrc` file to set up the registry, and set the `GITHUB_TOKEN` environment variable with a GitHub Personal Access Token that has the `read:packages` scope. (it may not be necessary if the package is public but it is recommended to set up for avoiding any issues)
+
+```.npmrc
+@nkmr-lab:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+Then, install the package via npm, yarn, or pnpm.
+
 ```bash
 npm install @nkmr-lab/neck-pose-estimator
 # or
