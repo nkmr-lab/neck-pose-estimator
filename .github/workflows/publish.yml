@@ -90,7 +90,6 @@ jobs:
           GIT_ASKPASS: ""
           GIT_TERMINAL_PROMPT: 0
           GITHUB_TOKEN: ${{ github.token }}
-        shell: bash -euxo pipefail
         working-directory: .
 
       - name: Set remote with PAT
