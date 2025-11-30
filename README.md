@@ -80,11 +80,18 @@ pnpm -F @nkmr-lab/neck-pose-estimator openapi
 If you find our work useful, please cite it as follows:
 
 ```bibtex
-@proceedings{64687.3764720,
-  booktitle = {OzCHI '25: The 2025 ACM SIGCHI Conference on Human Computer Interaction},
-  title = {Can We Prevent "Text Neck" Using Only a Smartphone? Real-Time Neck Angle Estimation and a Serious Game as a Case Study},
-  author = {Kento, Watanabe and Satoshi, Nakamura},
-  year = {2025},
-  doi = {https://doi.org/10.1145/3764687.3764720}
+@inproceedings{10.1145/3764687.3764720,
+author = {Watanabe, Kento and Nakamura, Satoshi},
+title = {Can We Prevent "Text Neck" Using Only a Smartphone? Real-Time Neck Angle Estimation and a Serious Game as a Case Study},
+year = {2025},
+isbn = {9798400720161},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3764687.3764720},
+doi = {10.1145/3764687.3764720},
+booktitle = {Proceedings of the 37th Australian Conference on Human-Computer Interaction},
+pages = {356–370},
+numpages = {15},
+series = {OzCHI '25}
 }
 ```
